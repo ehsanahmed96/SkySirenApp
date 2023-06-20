@@ -15,7 +15,7 @@
         android:background="@drawable/bg"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="match_parent"
@@ -37,6 +37,7 @@
         android:fontFamily="@font/fontfile"
         android:gravity="center"
         android:text="Sky Siren"
+        android:textColor="@color/white"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="124dp"
         android:text="Weather Forecast App"
+        android:textColor="@color/white"
         android:gravity="center"
         android:textSize="30sp"
         android:fontFamily="@font/fontfile"
