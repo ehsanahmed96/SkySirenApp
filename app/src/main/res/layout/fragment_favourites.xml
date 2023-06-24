@@ -1,16 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg"
     tools:context=".FavouritesFragment.FavouritesView.FavouritesFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:backgroundTint="@color/white"
-        android:textColor="@color/white"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/favGuidLineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="10dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/favGuidLineLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="14dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/favGuidLineRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="14dp" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/favCard"
+        android:layout_width="360dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/home_card"
+        app:layout_constraintEnd_toStartOf="@id/favGuidLineRight"
+        app:layout_constraintStart_toEndOf="@id/favGuidLineLeft"
+        app:layout_constraintTop_toTopOf="@id/favGuidLineTop"
+        tools:layout_editor_absoluteX="1dp">
+
+        <TextView
+            android:id="@+id/favtTxt"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:shadowColor="#F4C140"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="4"
+            android:text="Favourites"
+            android:textColor="@color/white"
+            android:textSize="40sp"
+            app:layout_constraintBottom_toBottomOf="@id/favCard"
+            app:layout_constraintEnd_toEndOf="@id/favCard"
+            app:layout_constraintStart_toStartOf="@id/favCard"
+            app:layout_constraintTop_toTopOf="@id/favCard"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/conFavLocation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/home_card"
+        android:padding="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintEnd_toStartOf="@id/favGuidLineRight"
+        app:layout_constraintStart_toEndOf="@id/favGuidLineLeft"
+        app:layout_constraintTop_toBottomOf="@id/favCard">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/fav_rv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:listitem="@layout/fav_row_item"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/favProgBar"
+        android:layout_width="97dp"
+        android:layout_height="89dp"
+        android:progressTint="@color/darkblue"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/noPlacesImg"
+        android:layout_width="149dp"
+        android:layout_height="122dp"
+        android:src="@drawable/ic_baseline_not_listed_location_24"
+        app:tint="#D5DDE1"
+        android:shadowColor="#F4C140"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/noPlacesTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/noPlacesImg"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="No Places In Favourites"
+        android:visibility="gone"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textColor="#D5DDE1"
+        android:shadowColor="#F4C140"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
+        />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/favFab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="40dp"
+        android:backgroundTint="#D5DDE1"
+        app:elevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/favGuidLineRight"
+        app:rippleColor="#E4D54E"
+        app:srcCompat="@drawable/ic_baseline_favorite_24"
+        app:tint="#077E9F"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

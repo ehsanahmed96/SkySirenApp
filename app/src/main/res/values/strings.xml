@@ -2,4 +2,11 @@
     <string name="app_name">SkySiren</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="LocationName">Elqalupia,Egypt</string>
+    <string name="ultra_violet" translatable="false">Ultra Violet</string>
+    <string name="visibility" translatable="false">Visibility</string>
+    <string name="cloud" translatable="false">Cloud</string>
+    <string name="humidity" translatable="false">Humidity</string>
+    <string name="pressure" translatable="false">Pressure</string>
+    <string name="wind" translatable="false">Wind</string>
 </resources>
