@@ -1,10 +1,13 @@
 package com.example.skysiren.Network
 
+import android.util.Log
+import com.example.skysiren.Model.WeatherDetail
 import com.google.gson.GsonBuilder
+import okhttp3.ResponseBody
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class Api_Client {
+class Api_Client : RemoteSource {
     private val api_service: Api_Services
 
     init {
@@ -15,4 +18,15 @@ class Api_Client {
             .build()
         api_service = retrofitInstance.create(Api_Services::class.java)
     }
+
+    override suspend fun getWeather(
+        lat: Double,
+        lon: Double,
+        units: String,
+        lang: String,
+        apiKey: String,
+    ): WeatherDetail {
+        return api_service.getWeather(lat,lon,units, lang, apiKey)
+    }
+
 }
