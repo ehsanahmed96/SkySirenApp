@@ -20,8 +20,8 @@ class Api_Client : RemoteSource {
     }
 
     override suspend fun getWeather(
-        lat: Double,
-        lon: Double,
+        lat: Double?,
+        lon: Double?,
         units: String,
         lang: String,
         apiKey: String,

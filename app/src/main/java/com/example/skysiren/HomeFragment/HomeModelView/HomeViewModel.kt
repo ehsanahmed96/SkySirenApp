@@ -11,12 +11,11 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val repo: RepositoryInterface): ViewModel()  {
-    private var weatherState : MutableStateFlow<ApiState> =
-        MutableStateFlow<ApiState>(ApiState.Loading)
+    private var weatherState : MutableStateFlow<ApiState> = MutableStateFlow<ApiState>(ApiState.Loading)
 
     val weather: StateFlow<ApiState> = weatherState
 
-    fun getWeatherFromRetrofit(lat:Double,lon:Double,units:String,lang:String,apiKey:String)
+    fun getWeatherFromRetrofit(lat:Double?,lon:Double?,units:String,lang:String,apiKey:String)
     {
         viewModelScope.launch(Dispatchers.IO) {
 

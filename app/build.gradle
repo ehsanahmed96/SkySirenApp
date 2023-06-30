@@ -2,6 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -10,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.skysiren"
-        minSdk 21
+        minSdk 19
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -62,4 +63,5 @@ dependencies {
     implementation"androidx.navigation:navigation-fragment:2.5.3"
     implementation"androidx.navigation:navigation-ui:2.5.3"
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 }
