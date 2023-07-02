@@ -40,21 +40,13 @@ class HomeActivity : AppCompatActivity() {
     lateinit var bindingHA: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-//        val actionBar = supportActionBar
-//        actionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_location_on_24)
-//        actionBar!!.setDisplayShowHomeEnabled(true)
-//        actionBar.setDisplayHomeAsUpEnabled(true)
-
         super.onCreate(savedInstanceState)
-
-
-
 
         bindingHA = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(bindingHA.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         pref = getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
-        val logged = pref.getBoolean("setUpComplete",false)
+        val logged = pref.getBoolean("setUpComplete", false)
 
 
         if (!logged) {
@@ -86,6 +78,7 @@ class HomeActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.location_menu, menu)
         return true
@@ -113,7 +106,6 @@ class HomeActivity : AppCompatActivity() {
         }
 
     }
-
 
 
     private fun checkPermissions(): Boolean {

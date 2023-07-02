@@ -274,12 +274,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <RadioButton
+                        android:id="@+id/cel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Celsius"
                         android:textColor="@color/white" />
 
                     <RadioButton
+                        android:id="@+id/kel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
@@ -288,6 +290,7 @@
                         tools:ignore="TouchTargetSizeCheck" />
 
                     <RadioButton
+                        android:id="@+id/fah"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="60dp"

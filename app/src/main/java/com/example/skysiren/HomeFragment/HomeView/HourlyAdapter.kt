@@ -62,21 +62,21 @@ class HourlyAdapter(
             var Hour: Hourly = weather.hourly[position]
             Icons.replaceIcons(Hour.weather.get(0).icon , holder.binding.imagHourRV)
             holder.binding.hourTxt.text = getTime(Hour.dt, weather.timezone)
-            holder.binding.tempTxt.text = "${Hour.temp.toInt()}°K"
-//            when (unit) {
-//                "metric" -> {
-//                    val formattedNumber = formatter.format(myHour.temp.toInt())
-//                    holder.binding.rvTxtTemp.text = "${formattedNumber}°C"
-//                }
-//                "imperial" -> {
-//                    val formattedNumber = formatter.format(myHour.temp.toInt())
-//                    holder.binding.rvTxtTemp.text = "${formattedNumber}°F"
-//                }
-//                else -> {
-//                    val formattedNumber = formatter.format(myHour.temp.toInt())
-//                    holder.binding.rvTxtTemp.text = "${formattedNumber}°K"
-//                }
-//            }
+            val formattedNumber = formatter.format(Hour.temp.toInt())
+            when (unit) {
+                "metric" -> {
+
+                    holder.binding.tempTxt.text = "${formattedNumber}°C"
+                }
+                "imperial" -> {
+
+                    holder.binding.tempTxt.text = "${formattedNumber}°F"
+                }
+                else -> {
+
+                    holder.binding.tempTxt.text = "${formattedNumber}°K"
+                }
+            }
         }
     }
 

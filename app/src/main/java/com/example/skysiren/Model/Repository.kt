@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 class Repository private constructor(
-    /*var local: Localsource,*/
+    var local: Localsource,
     var remote: RemoteSource
 ) : RepositoryInterface {
 
@@ -14,9 +14,9 @@ class Repository private constructor(
 
     companion object {
         private var instance: Repository? = null
-        fun getInstance(remote: RemoteSource/*, local: Localsource*/): Repository {
+        fun getInstance(remote: RemoteSource, local: Localsource): Repository {
             return instance ?: synchronized(this) {
-                val Instance = Repository(/*local,*/ remote)
+                val Instance = Repository(local, remote)
                 instance = Instance
                 Instance
             }
@@ -31,5 +31,17 @@ class Repository private constructor(
         apiKey: String,
     ): Flow<WeatherDetail>? {
         return flowOf(remote.getWeather(lat,lon,units,lang, apiKey))
+    }
+
+    override fun getWeatherFromRoom(): Flow<List<FavouritWeather>> {
+        return local.getWeatherFromRoom()
+    }
+
+    override suspend fun insertWeatherToRoom(weather: FavouritWeather) {
+        return local.insertWeatherToRoom(weather)
+    }
+
+    override suspend fun deletWeatherFromRoom(weather: FavouritWeather) {
+        return local.deleteWeatherFromRoom(weather)
     }
 }

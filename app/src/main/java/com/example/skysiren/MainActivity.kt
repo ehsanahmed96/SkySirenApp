@@ -21,6 +21,7 @@ lateinit var pref :SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.i("TAG", "onCreate: splash screen ")
         bindingSSc =  ActivityMainBinding.inflate(layoutInflater)
         setContentView(bindingSSc.root)
         pref =getSharedPreferences("PrefFile",Context.MODE_PRIVATE)

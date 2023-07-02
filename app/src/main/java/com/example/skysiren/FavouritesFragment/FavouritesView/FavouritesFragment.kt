@@ -1,60 +1,158 @@
 package com.example.skysiren.FavouritesFragment.FavouritesView
 
+import android.app.Activity
+import android.app.AlertDialog
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.example.skysiren.DataBase.ConcreteLocalSource
+import com.example.skysiren.DataBase.RoomState
+import com.example.skysiren.FavouritesFragment.FavouritesModelView.FavouritViewModel
+import com.example.skysiren.FavouritesFragment.FavouritesModelView.FavouritViewModelFactory
+import com.example.skysiren.File_name
+import com.example.skysiren.HomeActivity.HomeActivity
+import com.example.skysiren.MapActivity
+import com.example.skysiren.Model.FavouritWeather
+import com.example.skysiren.Model.Repository
+import com.example.skysiren.Network.ApiState
+import com.example.skysiren.Network.Api_Client
 import com.example.skysiren.R
+import com.example.skysiren.databinding.FragmentFavouritesBinding
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [FavouritesFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class FavouritesFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class FavouritesFragment : Fragment(), OnClick {
+    lateinit var bindingFF: FragmentFavouritesBinding
+    lateinit var adapterFA: FavouirteAdapter
+    lateinit var viewModel: FavouritViewModel
+    lateinit var favouriteFactory: FavouritViewModelFactory
+    lateinit var pref: SharedPreferences
+    lateinit var editor: SharedPreferences.Editor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_favourites, container, false)
+        bindingFF = FragmentFavouritesBinding.inflate(inflater, container, false)
+        return bindingFF.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FavouritesFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FavouritesFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        pref = requireActivity().getSharedPreferences(File_name, Context.MODE_PRIVATE)
+        editor = pref.edit()
+        adapterFA = FavouirteAdapter(emptyList(), requireContext(), this)
+
+        favouriteFactory = FavouritViewModelFactory(Repository.getInstance(Api_Client(),
+            ConcreteLocalSource.getInstance(requireContext())))
+        viewModel = ViewModelProvider(this, favouriteFactory).get(FavouritViewModel::class.java)
+
+        viewModel.getWeatherFromRoom()
+        lifecycleScope.launch {
+            viewModel.weatherFromRoom.collect { result ->
+                when (result) {
+                    is RoomState.Loading -> {
+                        bindingFF.favProgBar.visibility=View.VISIBLE
+                        bindingFF.favRV.visibility = View.GONE
+
+
+                    }
+                    is RoomState.Success -> {
+                        bindingFF.favProgBar.visibility=View.GONE
+                        bindingFF.favRV.visibility = View.VISIBLE
+
+                        result.weather.let {
+                            Log.i("TAG", "onViewCreated: $it")
+
+                            adapterFA.submitList(it)
+                            bindingFF.favRV.adapter=adapterFA
+
+                            if(it.isEmpty()){
+                                bindingFF.noPlacesImg.visibility = View.VISIBLE
+                                bindingFF.noPlacesTxt.visibility = View.VISIBLE
+                            }else{
+                                bindingFF.noPlacesImg.visibility = View.GONE
+                                bindingFF.noPlacesTxt.visibility = View.GONE
+                            }
+
+                        }}
+
+
+
+                    else -> {
+
+
+                    }
                 }
+
+
             }
+        }
+
+
+
+
+
+
+        bindingFF.favFab.setOnClickListener {
+            editor.putString("flag", "fav").apply()
+            val intent = Intent(requireContext(), MapActivity::class.java)
+            startActivityForResult(intent, 1)
+        }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val lat = data?.getStringExtra("lat")?.toDoubleOrNull()
+            val lon = data?.getStringExtra("lon")?.toDoubleOrNull()
+            if (lat != null) {
+                if (lon != null) {
+                    val fav = FavouritWeather(lat, lon)
+                    viewModel.insertweatherToRoom(fav)
+                }
+            } else {
+                Toast.makeText(context, "empty" + lat, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+
+    companion object {
+
+    }
+
+    override fun onClick(favModel: FavouritWeather) {
+        editor.putString("flag", "fav").apply()
+        editor.putString("lat", favModel.latitude.toString()).apply()
+        editor.putString("lon", favModel.longitude.toString()).apply()
+        val intent = Intent(activity, HomeActivity::class.java)
+        startActivity(intent)
+    }
+
+    override fun onDeleteIcon(favWeather: FavouritWeather) {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        builder.setCancelable(true)
+        builder.setTitle("delete from favourite")
+        builder.setMessage("are you sure ?")
+        builder.setPositiveButton(android.R.string.ok) { _, _ ->
+            viewModel.deletweatheFromRoom(favWeather)
+        }
+        builder.setNegativeButton(android.R.string.cancel) { _, _ -> }
+        builder.show()
+    }
+
 }

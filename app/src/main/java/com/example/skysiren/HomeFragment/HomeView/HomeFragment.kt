@@ -41,6 +41,7 @@ import com.example.skysiren.Model.WeatherDetail
 import com.example.skysiren.Network.ApiState
 import com.example.skysiren.Network.Api_Client
 import com.example.skysiren.R
+import com.example.skysiren.SettingFragment.SettingView.SettingFragment
 import com.example.skysiren.databinding.FragmentHomeBinding
 import com.google.android.gms.location.*
 import com.google.gson.Gson
@@ -55,6 +56,7 @@ import java.text.NumberFormat
 const val api_key = "958570d9d213a63daaf4a092ec70aa5b"
 
 class HomeFragment : Fragment() {
+    //private lateinit var settingFragment: SettingFragment
 
     lateinit var bindingHF: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
@@ -77,14 +79,13 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
         pref = requireActivity().getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
         editor = pref.edit()
 
         latitude = pref.getString("lat", null)?.toDoubleOrNull() ?: 0.0
-        Log.i("TAG", "onViewCreated: $latitude")
+        Log.i("TAG", "onViewCreated home fragment: $latitude")
         longitude = pref.getString("lon", null)?.toDoubleOrNull() ?: 0.0
-        Log.i("TAG", "onViewCreated: $longitude")
+        Log.i("TAG", "onViewCreated home fragment: $longitude")
         bindingHF = FragmentHomeBinding.inflate(inflater, container, false)
 
         return bindingHF.root
@@ -93,14 +94,25 @@ class HomeFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        editor.putString("flag", "home").apply()
         var lang = "en"
-        var unit = "metric"
-        val measureUnit = "m/s"
+        var unit = "imperial"
+        var measureUnit = "m/s"
+
+//        settingFragment =
+//            requireActivity().supportFragmentManager.findFragmentById(R.id.settingFragment) as SettingFragment
+//        lifecycleScope.launch {
+//            settingFragment.getTempStatusFlow().collect{
+//                unit = it
+//                Log.i("TAG", "onViewCreated home frag unit value: $unit")
+//            }
+//        }
 
 
-        homeFactory = HomeViewModelFactory(Repository.getInstance(Api_Client()/*,
-            ConcreteLocalSource.getInstance(requireContext())*/))
+
+
+        homeFactory = HomeViewModelFactory(Repository.getInstance(Api_Client(),
+            ConcreteLocalSource.getInstance(requireContext())))
         viewModel = ViewModelProvider(this, homeFactory).get(HomeViewModel::class.java)
 
 
@@ -166,77 +178,87 @@ class HomeFragment : Fragment() {
     fun display(
         result: WeatherDetail,
         unit: String,
-        measurement: String,
+        measureUnit: String,
         lang: String,
     ) {
         val formatter = NumberFormat.getInstance(Locale(lang))
-        val geocoder = Geocoder(requireContext() , Locale.getDefault())
+        val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: List<Address> =
             geocoder.getFromLocation(result.lat, result.lon, 1) as List<Address>
 
-        HourlyAdapter =
-            HourlyAdapter(result, requireContext(), unit, lang)
+        HourlyAdapter = HourlyAdapter(result, requireContext(), unit, lang)
         bindingHF.hourRv.adapter = HourlyAdapter
 
-        DailyAdapter =
-            DailyAdapter(result, requireContext(), unit, lang)
+        DailyAdapter = DailyAdapter(result, requireContext(), unit, lang)
         bindingHF.dayRv.adapter = DailyAdapter
-        bindingHF.descTxt.text = result.current.weather[0].description
-        Icons.replaceIcons(result.current.weather.get(0).icon , bindingHF.iconWeather)
 
-        if(addresses .isNotEmpty()) {
-            bindingHF.LocationName.text ="${addresses[0].locality}/${addresses[0].countryName}"
+        bindingHF.descTxt.text = result.current.weather[0].description
+        Icons.replaceIcons(result.current.weather.get(0).icon, bindingHF.iconWeather)
+
+        if (addresses.isNotEmpty()) {
+            Log.i("TAG", "getFullAddress: ${addresses[0].locality}")
+            bindingHF.LocationName.text = "${addresses[0].locality}/${addresses[0].countryName}"
         }
         bindingHF.dateTxt.text = date(lang)
+
+        bindingHF.valueWind.text = result.current.wind_speed.toString()
+
+        bindingHF.valuePressure.text = "${result.current.pressure} hpa"
+
+        bindingHF.valueHumidity.text = "${result.current.humidity} %"
+
+        bindingHF.valueCloud.text = "${result.current.clouds} %"
+
+        bindingHF.valueUltraViolet.text = result.current.uvi.toString()
+
+        bindingHF.valueVisibility.text = "${result.current.visibility} m"
 
         val formattedNumber = formatter.format(result.current.temp)
         bindingHF.tempTxt.text = "${formattedNumber}°k"
 
-        bindingHF.valueWind.text =
-            result.current.wind_speed.toString()
-        bindingHF.valuePressure.text =
-            "${result.current.pressure} hpa"
-        bindingHF.valueHumidity.text =
-            "${result.current.humidity} %"
-        bindingHF.valueCloud.text =
-            "${result.current.clouds} %"
-        bindingHF.valueUltraViolet.text =
-            result.current.uvi.toString()
-        bindingHF.valueVisibility.text =
-            "${result.current.visibility} m"
-//        when (unit) {
-//            "metric" -> {
-//                val formattedNumber = formatter.format(weatherDetail.current.temp)
-//                binding.txtTemp.text = "${formattedNumber}°C"
-//                if (measurement.equals("m/s")) {
-//                    binding.txtWind.text = "${weatherDetail.current.wind_speed} m/s"
-//                } else {
-//                    binding.txtWind.text =
-//                        "${convertWindSpeedMpH(weatherDetail.current.wind_speed).toInt()} m/h"
-//                }
-//            }
-//            "imperial" -> {
-//                val formattedNumber = formatter.format(weatherDetail.current.temp)
-//                binding.txtTemp.text = "${formattedNumber}°f"
-//                if (measurement.equals("m/s")) {
-//                    binding.txtWind.text =
-//                        "${convertWindSpeedMpS(weatherDetail.current.wind_speed).toInt()} m/s"
-//                } else {
-//                    binding.txtWind.text = "${weatherDetail.current.wind_speed} m/h"
-//                }
-//            }
-//            else -> {
-//                val formattedNumber = formatter.format(weatherDetail.current.temp)
-//                binding.txtTemp.text = "${formattedNumber}°k"
-//                if (measurement.equals("m/s")) {
-//                    binding.txtWind.text = "${weatherDetail.current.wind_speed} m/s"
-//                } else {
-//                    binding.txtWind.text =
-//                        "${convertWindSpeedMpH(weatherDetail.current.wind_speed).toInt()} m/h"
-//                }
-//            }
-//        }
+        when (unit) {
+            "metric" -> {
 
+                bindingHF.tempTxt.text = "${formattedNumber}°C"
+                if (measureUnit.equals("m/s")) {
+                    bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
+                } else {
+                    bindingHF.valueWind.text =
+                        "${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
+                }
+            }
+            "imperial" -> {
+
+                bindingHF.tempTxt.text = "${formattedNumber}°f"
+                if (measureUnit.equals("m/s")) {
+                    bindingHF.valueWind.text =
+                        "${convertMetersPerSecondToMilesPerHour(result.current.wind_speed).toInt()} m/s"
+                } else {
+                    bindingHF.valueWind.text = "${result.current.wind_speed} m/h"
+                }
+            }
+            else -> {
+
+                bindingHF.tempTxt.text = "${formattedNumber}°k"
+                if (measureUnit.equals("m/s")) {
+                    bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
+                } else {
+                    bindingHF.valueWind.text =
+                        "${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
+                }
+            }
+        }
+
+
+    }
+
+    fun convertMetersPerSecondToMilesPerHour(mps: Double): Double {
+        return mps * 2.23694
+
+    }
+
+    fun convertMilesPerHourToMetersPerSecond(mph: Double): Double {
+        return mph / 2.23694
 
     }
 

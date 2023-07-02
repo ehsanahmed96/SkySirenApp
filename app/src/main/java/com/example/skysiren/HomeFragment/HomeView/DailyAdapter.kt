@@ -48,24 +48,22 @@ class DailyAdapter(
            Icons.replaceIcons(Day.weather.get(0).icon , holder.binding.rvImgWDay)
             holder.binding.txtDayName.text = getDay(Day.dt,lang)
             holder.binding.rvTxtTemp.text = Day.weather.get(0).description
-            holder.binding.rvNumTemp.text = "${Day.temp.min.toInt()}/${Day.temp.max.toInt()}°K"
-//            when (unit) {
-//                "metric" -> {
-//                    val formattedNumber1 = formatter.format(myDay.temp.min.toInt())
-//                    val formattedNumber2 = formatter.format(myDay.temp.max.toInt())
-//                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°C"
-//                }
-//                "imperial" -> {
-//                    val formattedNumber1 = formatter.format(myDay.temp.min.toInt())
-//                    val formattedNumber2 = formatter.format(myDay.temp.max.toInt())
-//                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°F"
-//                }
-//                else -> {
-//                    val formattedNumber1 = formatter.format(myDay.temp.min.toInt())
-//                    val formattedNumber2 = formatter.format(myDay.temp.max.toInt())
-//                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°K"
-//                }
-//            }
+            val formattedNumber1 = formatter.format(Day.temp.min.toInt())
+            val formattedNumber2 = formatter.format(Day.temp.max.toInt())
+            when (unit) {
+                "metric" -> {
+
+                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°C"
+                }
+                "imperial" -> {
+
+                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°F"
+                }
+                else -> {
+
+                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°K"
+                }
+            }
 
 
         }

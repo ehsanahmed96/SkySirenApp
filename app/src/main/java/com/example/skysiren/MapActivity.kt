@@ -40,16 +40,16 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
     }
 
     override fun onMapReady(googleMap: GoogleMap){
-        var initialLocation = LatLng(-34.0, 120.0)
+        var Location = LatLng(-34.0, 151.0)
         gMap = googleMap
 
         gMap.setOnMapClickListener(GoogleMap.OnMapClickListener {
-            initialLocation = LatLng(it.latitude, it.longitude)
+            Location = LatLng(it.latitude, it.longitude)
             pref.edit().putString("lat", it.latitude.toString()).apply()
             pref.edit().putString("lon", it.longitude.toString()).apply()
-            gMap.addMarker(MarkerOptions().position(initialLocation).title("location"))
-            gMap.moveCamera(CameraUpdateFactory.newLatLng(initialLocation))
-            confirm(initialLocation)
+            gMap.addMarker(MarkerOptions().position(Location).title("location"))
+            gMap.moveCamera(CameraUpdateFactory.newLatLng(Location))
+            confirm(Location)
         })
     }
 
@@ -58,8 +58,22 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
         builder.setTitle("Location Confirm")
         builder.setMessage(" "+getFullAddress(latLng.latitude,latLng.longitude)+" ?")
         builder.setPositiveButton(android.R.string.ok) { dialog, which ->
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
+            if(pref.getString("flag","none").equals("fav"))
+            {
+                val Intent = Intent()
+                Intent.putExtra("lat", latLng.latitude.toString())
+                Intent.putExtra("lon", latLng.longitude.toString())
+
+                Toast.makeText(this,"Added to favourites",Toast.LENGTH_SHORT).show()
+                setResult(RESULT_OK,Intent)
+                finish()
+            }
+            else if(pref.getString("flag","none").equals("home"))
+            {
+               val intent=Intent(this,HomeActivity::class.java)
+               startActivity(intent)
+                finish()
+           }
         }
         builder.setNegativeButton(android.R.string.cancel){ dialog, which -> }
         builder.show()
@@ -72,8 +86,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()){
                 var city = addresses[0].adminArea
-                Log.i("TAG", "getFullAddress: $city")
+                Log.i("TAG", "getFullAddress city: $city")
                 var country = addresses[0].countryName
+                Log.i("TAG", "getFullAddress country: $country")
                 allAddress = "$city,$country"
             }
         }catch (e: IOException){
