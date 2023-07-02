@@ -195,12 +195,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <RadioButton
+                        android:id="@+id/gps"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="GPS"
                         android:textColor="@color/white" />
 
                     <RadioButton
+                        android:id="@+id/map"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
@@ -233,12 +235,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <RadioButton
+                        android:id="@+id/arabic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Arabic"
                         android:textColor="@color/white" />
 
                     <RadioButton
+                        android:id="@+id/english"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
@@ -326,12 +330,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <RadioButton
+                        android:id="@+id/meter_sec"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Meter / Sec"
                         android:textColor="@color/white" />
 
                     <RadioButton
+                        android:id="@+id/mile_hour"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
@@ -364,12 +370,14 @@
                     app:layout_constraintTop_toTopOf="parent">
 
                     <RadioButton
+                        android:id="@+id/enable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Enable"
                         android:textColor="@color/white" />
 
                     <RadioButton
+                        android:id="@+id/disable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"

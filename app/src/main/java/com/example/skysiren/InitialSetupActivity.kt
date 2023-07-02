@@ -9,34 +9,34 @@ import com.example.skysiren.HomeActivity.HomeActivity
 import com.example.skysiren.databinding.ActivityInitialSetupBinding
 
 class InitialSetupActivity : AppCompatActivity() {
-    lateinit var bindingISet : ActivityInitialSetupBinding
-    var setUpComplete : Boolean = false
+    lateinit var bindingISet: ActivityInitialSetupBinding
+    var setUpComplete: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         bindingISet = ActivityInitialSetupBinding.inflate(layoutInflater)
         setContentView(bindingISet.root)
         Log.i("TAG", "onCreate:initial set up")
-        val pref = getSharedPreferences("PrefFile" ,Context.MODE_PRIVATE)
+        val pref = getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
         bindingISet.switchNoti.isChecked = true
         Log.i("TAG", "onCreate:initial set up after switch notifi ")
 
         bindingISet.btnSetUpDone.setOnClickListener {
-            pref.edit().putBoolean("setUpComplete" ,true).apply()
-            setUpComplete =true
-            if(bindingISet.rbgps.isChecked){
-                pref.edit().putString("location","gps").apply()
+            pref.edit().putBoolean("setUpComplete", true).apply()
+            setUpComplete = true
+            if (bindingISet.rbgps.isChecked) {
+                pref.edit().putString("location", "gps").apply()
                 Log.i("TAG", "onCreate:initial set up location is gps ")
-            }else if (bindingISet.rbMap.isChecked){
-                pref.edit().putString("location" , "map").apply()
+            } else if (bindingISet.rbMap.isChecked) {
+                pref.edit().putString("location", "map").apply()
             }
 
             bindingISet.switchNoti.setOnClickListener {
-                if(bindingISet.switchNoti.isChecked){
-                    pref.edit().putString("notification" , "enable").apply()
+                if (bindingISet.switchNoti.isChecked) {
+                    pref.edit().putBoolean("noti", true).apply()
 
-                }else{
-                    pref.edit().putString("notification" , "disable").apply()
+                } else {
+                    pref.edit().putBoolean("noti", false).apply()
 
                 }
             }

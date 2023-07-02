@@ -42,9 +42,12 @@ import com.example.skysiren.Network.ApiState
 import com.example.skysiren.Network.Api_Client
 import com.example.skysiren.R
 import com.example.skysiren.SettingFragment.SettingView.SettingFragment
+import com.example.skysiren.SettingFragment.SettingView.SettingInterface
 import com.example.skysiren.databinding.FragmentHomeBinding
 import com.google.android.gms.location.*
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -55,9 +58,7 @@ import java.text.NumberFormat
 
 const val api_key = "958570d9d213a63daaf4a092ec70aa5b"
 
-class HomeFragment : Fragment() {
-    //private lateinit var settingFragment: SettingFragment
-
+class HomeFragment : Fragment(){
     lateinit var bindingHF: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
     lateinit var homeFactory: HomeViewModelFactory
@@ -95,18 +96,11 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         editor.putString("flag", "home").apply()
-        var lang = "en"
-        var unit = "imperial"
-        var measureUnit = "m/s"
+        var notification = pref.getBoolean("noti" , false).toString() ////boolean value to notification true or false
+        var language = pref.getString("lang" ,"non").toString()
+        var unitTemp = pref.getString("temp" , "standard").toString()
+        var measureUnit = pref.getString("measureUnit","m/s").toString()
 
-//        settingFragment =
-//            requireActivity().supportFragmentManager.findFragmentById(R.id.settingFragment) as SettingFragment
-//        lifecycleScope.launch {
-//            settingFragment.getTempStatusFlow().collect{
-//                unit = it
-//                Log.i("TAG", "onViewCreated home frag unit value: $unit")
-//            }
-//        }
 
 
 
@@ -117,7 +111,7 @@ class HomeFragment : Fragment() {
 
 
         if (isNetworkAvailable(requireContext())) {
-            getRemoteWeather(latitude, longitude, lang, unit)
+            getRemoteWeather(latitude, longitude, language, unitTemp)
             lifecycleScope.launch {
                 viewModel.weather.collect { result ->
                     when (result) {
@@ -129,7 +123,7 @@ class HomeFragment : Fragment() {
                         is ApiState.Success -> {
                             bindingHF.progressBar.visibility = View.GONE
                             bindingHF.scrollView2.visibility = View.VISIBLE
-                            display(result.weather, unit, measureUnit, lang)
+                            display(result.weather, language, measureUnit, unitTemp)
 
 
                         }
@@ -175,12 +169,7 @@ class HomeFragment : Fragment() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun display(
-        result: WeatherDetail,
-        unit: String,
-        measureUnit: String,
-        lang: String,
-    ) {
+    fun display(result: WeatherDetail, lang: String, measureUnit: String, unit: String) {
         val formatter = NumberFormat.getInstance(Locale(lang))
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: List<Address> =
@@ -214,7 +203,6 @@ class HomeFragment : Fragment() {
         bindingHF.valueVisibility.text = "${result.current.visibility} m"
 
         val formattedNumber = formatter.format(result.current.temp)
-        bindingHF.tempTxt.text = "${formattedNumber}°k"
 
         when (unit) {
             "metric" -> {
@@ -271,6 +259,7 @@ class HomeFragment : Fragment() {
         val formattedDateTime = currentDateTime.format(formatter)
         return formattedDateTime
     }
+
 
 
 }

@@ -85,7 +85,7 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
         try{
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()){
-                var city = addresses[0].adminArea
+                var city = addresses[0].locality
                 Log.i("TAG", "getFullAddress city: $city")
                 var country = addresses[0].countryName
                 Log.i("TAG", "getFullAddress country: $country")

@@ -47,7 +47,7 @@ class FavouirteAdapter  (var list :List< FavouritWeather>,
                 fav.latitude, fav.longitude, 1
             ) as MutableList<Address>
             if (addresses.isNotEmpty()) {
-                holder.binding.txtCountryName.text = "${addresses[0].locality},${addresses[0].countryName}"
+                holder.binding.txtCountryName.text = "${addresses[0].locality} / ${addresses[0].countryName}"
             } else {
                 Toast.makeText(context, "empty", Toast.LENGTH_SHORT).show()
             }
