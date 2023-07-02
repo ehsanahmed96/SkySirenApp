@@ -60,7 +60,7 @@
                     android:shadowDx="2"
                     android:shadowDy="2"
                     android:shadowRadius="4"
-                    android:text="Setting"
+                    android:text="@string/Setting"
                     android:textColor="@color/white"
                     android:textSize="40sp"
                     app:layout_constraintBottom_toBottomOf="@id/settCard"
@@ -82,7 +82,7 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="Location"
+                android:text="@string/Location"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toTopOf="@id/locationCard"
@@ -95,14 +95,14 @@
                 android:id="@+id/languageTxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"
+                android:layout_marginStart="120dp"
                 android:layout_marginTop="20dp"
                 android:elevation="2dp"
                 android:shadowColor="#F4C140"
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="Language"
+                android:text="@string/Language"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toTopOf="@id/languageCard"
@@ -123,7 +123,7 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="Temperature"
+                android:text="@string/Temperature"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toTopOf="@id/tempCard"
@@ -144,7 +144,7 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="Wind Speed"
+                android:text="@string/WindSpeed"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toTopOf="@id/windCard"
@@ -164,7 +164,7 @@
                 android:shadowDx="2"
                 android:shadowDy="2"
                 android:shadowRadius="4"
-                android:text="Notifications"
+                android:text="@string/Notifications"
                 android:textColor="@color/white"
                 android:textSize="25sp"
                 app:layout_constraintBottom_toTopOf="@id/notificationCard"
@@ -198,7 +198,7 @@
                         android:id="@+id/gps"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="GPS"
+                        android:text="@string/GPS"
                         android:textColor="@color/white" />
 
                     <RadioButton
@@ -206,7 +206,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="MAP"
+                        android:text="@string/MAP"
                         android:textColor="@color/white"
                         tools:ignore="TouchTargetSizeCheck" />
 
@@ -238,7 +238,7 @@
                         android:id="@+id/arabic"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Arabic"
+                        android:text="@string/Arabic"
                         android:textColor="@color/white" />
 
                     <RadioButton
@@ -246,7 +246,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="English"
+                        android:text="@string/English"
                         android:textColor="@color/white"
                         tools:ignore="TouchTargetSizeCheck" />
 
@@ -281,7 +281,7 @@
                         android:id="@+id/cel"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Celsius"
+                        android:text="@string/Celsius"
                         android:textColor="@color/white" />
 
                     <RadioButton
@@ -289,7 +289,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Kelvin"
+                        android:text="@string/Kelvin"
                         android:textColor="@color/white"
                         tools:ignore="TouchTargetSizeCheck" />
 
@@ -298,7 +298,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="60dp"
-                        android:text="Fahrenheit"
+                        android:text="@string/Fahrenheit"
                         android:textColor="@color/white" />
 
 
@@ -333,7 +333,7 @@
                         android:id="@+id/meter_sec"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Meter / Sec"
+                        android:text="@string/Meter_Sec"
                         android:textColor="@color/white" />
 
                     <RadioButton
@@ -341,7 +341,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Mile / Hour"
+                        android:text="@string/Mile_Hour"
                         android:textColor="@color/white"
                         tools:ignore="TouchTargetSizeCheck" />
                 </RadioGroup>
@@ -373,7 +373,7 @@
                         android:id="@+id/enable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Enable"
+                        android:text="@string/Enable"
                         android:textColor="@color/white" />
 
                     <RadioButton
@@ -381,7 +381,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:minHeight="48dp"
-                        android:text="Disable"
+                        android:text="@string/Disable"
                         android:textColor="@color/white"
                         tools:ignore="TouchTargetSizeCheck" />
                 </RadioGroup>

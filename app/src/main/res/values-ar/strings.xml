@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SkySiren</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="LocationName" translatable="false">مصر/القليوبيه </string>
+    <string name="ultra_violet" translatable="false">الاشعه فوق البنفسجيه</string>
+    <string name="visibility" translatable="false">الرؤيه</string>
+    <string name="cloud" translatable="false">الغيوم</string>
+    <string name="humidity" translatable="false">الرطوبه</string>
+    <string name="pressure" translatable="false">الضغط</string>
+    <string name="wind" translatable="false">الرياح</string>
+    <string name="From" translatable="false" >من</string>
+    <string name="To" translatable="false">الى</string>
+    <string name="Alarm" translatable="false">المنبه</string>
+    <string name="Notification" translatable="false">الاشعارات</string>
+    <string name="Save" translatable="false">حفظ</string>
+    <string name="StartDate" translatable="false">بدايه من</string>
+    <string name="EndDate" translatable="false">نهايه الى</string>
+    <string name="Dismiss" translatable="false">تجاهل</string>
+    <string name="Location" translatable="false">الموقع</string>
+    <string name="Language" translatable="false">اللغه</string>
+    <string name="WindSpeed" translatable="false">سرعه الرياح</string>
+    <string name="Temperature" translatable="false">درجه الحرارة</string>
+    <string name="Notifications" translatable="false">الاشعارات</string>
+    <string name="Setting" translatable="false">الاعدادات</string>
+    <string name="GPS" translatable="false">الموقع الجغرافى</string>
+    <string name="MAP" translatable="false">الخريطه</string>
+    <string name="Arabic" translatable="false">العربيه</string>
+    <string name="English" translatable="false">الانجليزيه</string>
+    <string name="Celsius" translatable="false">سيلزيوس</string>
+    <string name="Kelvin" translatable="false">كيلفن</string>
+    <string name="Fahrenheit" translatable="false">فهرنهايت</string>
+    <string name="Meter_Sec" translatable="false">متر/الثانيه</string>
+    <string name="Mile_Hour" translatable="false">ميللي/الساعه</string>
+    <string name="Enable" translatable="false">تفعيل</string>
+    <string name="Disable" translatable="false">الغاء التفعيل</string>
+    <string name="Favourites" translatable="false">المفضله</string>
+    <string name="NoPlacesInFavourites" translatable="false">لا يوجد أماكن فى المفضله</string>
+    <string name="Alerts" translatable="false">التنبيه</string>
+    <string name="NoAlerts" translatable="false">لا يوجد تنبيهات</string>
+    <string name="initial_setup" translatable="false">الاعدادات الاوليه </string>
+    <string name="location" translatable="false">الموقع</string>
+    <string name="done" translatable="false">حفظ</string>
+    <string name="weather_alert" translatable="false">تنبيه الطقس </string>
+</resources>

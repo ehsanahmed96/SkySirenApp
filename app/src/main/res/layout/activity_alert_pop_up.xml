@@ -41,11 +41,12 @@
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="8dp"
                 android:padding="5dp"
-                android:text="weather_alert"
+                android:text="@string/weather_alert"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/image"
                 app:layout_constraintTop_toTopOf="@+id/image" />
 
@@ -78,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#D5DDE1"
-                    android:text="dismiss"
+                    android:text="@string/Dismiss"
                     android:textAllCaps="false"
                     android:textColor="#052EAA"
                     android:textSize="16sp"

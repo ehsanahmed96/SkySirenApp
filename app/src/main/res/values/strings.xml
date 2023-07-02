@@ -1,12 +1,44 @@
 <resources>
     <string name="app_name">SkySiren</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="LocationName">Elqalupia,Egypt</string>
+    <string name="LocationName" translatable="false">Elqalupia,Egypt</string>
     <string name="ultra_violet" translatable="false">Ultra Violet</string>
     <string name="visibility" translatable="false">Visibility</string>
     <string name="cloud" translatable="false">Cloud</string>
     <string name="humidity" translatable="false">Humidity</string>
     <string name="pressure" translatable="false">Pressure</string>
     <string name="wind" translatable="false">Wind</string>
+    <string name="From" translatable="false" >From</string>
+    <string name="To" translatable="false">To</string>
+    <string name="Alarm" translatable="false">Alarm</string>
+    <string name="Notification" translatable="false">Notification</string>
+    <string name="Save" translatable="false">Save</string>
+    <string name="StartDate" translatable="false">Start Date</string>
+    <string name="EndDate" translatable="false">End Date</string>
+    <string name="Dismiss" translatable="false">Dismiss</string>
+    <string name="Location" translatable="false">Location</string>
+    <string name="Language" translatable="false">Language</string>
+    <string name="WindSpeed" translatable="false">Wind Speed</string>
+    <string name="Temperature" translatable="false">Temperature</string>
+    <string name="Notifications" translatable="false">Notifications</string>
+    <string name="Setting" translatable="false">Setting</string>
+    <string name="GPS" translatable="false">GPS</string>
+    <string name="MAP" translatable="false">MAP</string>
+    <string name="Arabic" translatable="false">Arabic</string>
+    <string name="English" translatable="false">English</string>
+    <string name="Celsius" translatable="false">Celsius</string>
+    <string name="Kelvin" translatable="false">Kelvin</string>
+    <string name="Fahrenheit" translatable="false">Fahrenheit</string>
+    <string name="Meter_Sec" translatable="false">Meter/Sec</string>
+    <string name="Mile_Hour" translatable="false">Mile/Hour</string>
+    <string name="Enable" translatable="false">Enable</string>
+    <string name="Disable" translatable="false">Disable</string>
+    <string name="Favourites" translatable="false">Favourites</string>
+    <string name="NoPlacesInFavourites" translatable="false">No Places in Favourites</string>
+    <string name="Alerts" translatable="false">Alerts</string>
+    <string name="NoAlerts" translatable="false">No Alerts</string>
+    <string name="initial_setup" translatable="false">initial_setup</string>
+    <string name="location" translatable="false">location</string>
+    <string name="done" translatable="false">done</string>
+    <string name="weather_alert" translatable="false">weather_alert</string>
 </resources>

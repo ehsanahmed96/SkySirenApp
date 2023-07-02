@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.skysiren.File_name
 import com.example.skysiren.MapActivity
@@ -16,6 +18,7 @@ import com.example.skysiren.R
 import com.example.skysiren.databinding.FragmentSettingBinding
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
+import java.util.*
 
 
 class SettingFragment : Fragment() {
@@ -88,8 +91,17 @@ class SettingFragment : Fragment() {
 
         bindingSF.languageRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
-                R.id.arabic -> editor.putString("lang", "ar").apply()
-                R.id.english -> editor.putString("lang", "en").apply()
+                R.id.arabic ->{
+                    editor.putString("lang", "ar").apply()
+                   setLanguage(requireContext(),"ar")
+                    activity?.recreate();
+                }
+                R.id.english -> {
+                    editor.putString("lang", "en").apply()
+                   setLanguage(requireContext(),"en")
+                    activity?.recreate();
+
+                }
             }
         }
         bindingSF.WindRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
@@ -112,7 +124,6 @@ class SettingFragment : Fragment() {
                 R.id.gps -> editor.putString("location", "gps").apply()
                 R.id.map -> {
                     editor.putString("location", "map").apply()
-                    //editor.putString("flag" , "setting").apply()
                     val intent = Intent(requireContext(), MapActivity::class.java)
                     startActivity(intent)
                     activity?.finish()
@@ -128,7 +139,17 @@ class SettingFragment : Fragment() {
 
 
     }
+    fun  setLanguage(context: Context, language:String) {
 
+        val locale = Locale(language)
+        val config = context.resources.configuration
+        config.locale= Locale(language)
+        Locale.setDefault(locale)
+        config.setLayoutDirection(Locale(language))
+        context.resources.updateConfiguration(config, context.resources.displayMetrics)
+        context.createConfigurationContext(config)
+
+    }
 
     companion object {
 

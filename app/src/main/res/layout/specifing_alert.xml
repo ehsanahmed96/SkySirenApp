@@ -22,7 +22,7 @@
             android:layout_width="100dp"
             android:layout_height="35dp"
             android:gravity="center"
-            android:text="From"
+            android:text="@string/From"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -49,7 +49,7 @@
             android:layout_width="100dp"
             android:layout_height="35dp"
             android:gravity="center"
-            android:text="To"
+            android:text="@string/To"
             android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -145,7 +145,7 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:gravity="center"
-            android:text="Alarm"
+            android:text="@string/Alarm"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
 
@@ -154,7 +154,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Notification"
+            android:text="@string/Notification"
             android:textColor="#FFFFFF"
             android:textSize="14sp" />
     </RadioGroup>
@@ -165,7 +165,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:background="@drawable/day_card"
-        android:text="Save"
+        android:text="@string/Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.458"
         app:layout_constraintStart_toStartOf="parent"
