@@ -94,7 +94,7 @@ class SettingFragment : Fragment() {
                 R.id.arabic ->{
                     editor.putString("lang", "ar").apply()
                    setLanguage(requireContext(),"ar")
-                    activity?.recreate();
+                  activity?.recreate();
                 }
                 R.id.english -> {
                     editor.putString("lang", "en").apply()

@@ -1,6 +1,7 @@
 package com.example.skysiren.DataBase
 
 import android.content.Context
+import com.example.skysiren.Model.Alerts
 import com.example.skysiren.Model.FavouritWeather
 import com.example.skysiren.Model.WeatherDetail
 import kotlinx.coroutines.flow.Flow
@@ -25,11 +26,24 @@ class ConcreteLocalSource (context: Context) : Localsource {
       return weatherDAO.getWeatherFromRoom()
     }
 
+
     override suspend fun insertWeatherToRoom(weather: FavouritWeather) {
         return weatherDAO.insertWeatherToRoom(weather)
     }
 
     override suspend fun deleteWeatherFromRoom(weather: FavouritWeather) {
         return weatherDAO.deleteWeatherFromRoom(weather)
+    }
+
+    override fun getAllAlertsFromRoom(): Flow<List<Alerts>> {
+        return weatherDAO.getAlertsFromRoom()
+    }
+
+    override suspend fun insertAlertToRoom(alert: Alerts) {
+       return weatherDAO.insertAlertToRoom(alert)
+    }
+
+    override suspend fun deletAlertFromRoom(alert: Alerts) {
+       return weatherDAO.deleteAlertFromRoom(alert)
     }
 }

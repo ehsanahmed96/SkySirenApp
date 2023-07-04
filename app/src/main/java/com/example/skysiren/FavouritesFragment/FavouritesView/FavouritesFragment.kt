@@ -146,8 +146,8 @@ class FavouritesFragment : Fragment(), OnClick {
     override fun onDeleteIcon(favWeather: FavouritWeather) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         builder.setCancelable(true)
-        builder.setTitle("delete from favourite")
-        builder.setMessage("are you sure ?")
+        builder.setTitle(R.string.delet_title)
+        builder.setMessage(R.string.are_you_sure)
         builder.setPositiveButton(android.R.string.ok) { _, _ ->
             viewModel.deletweatheFromRoom(favWeather)
         }

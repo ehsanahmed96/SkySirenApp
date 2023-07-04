@@ -13,8 +13,8 @@
     <string name="Alarm" translatable="false">Alarm</string>
     <string name="Notification" translatable="false">Notification</string>
     <string name="Save" translatable="false">Save</string>
-    <string name="StartDate" translatable="false">Start Date</string>
-    <string name="EndDate" translatable="false">End Date</string>
+    <string name="StartDate" translatable="false">Start Date : </string>
+    <string name="EndDate" translatable="false">End Date : </string>
     <string name="Dismiss" translatable="false">Dismiss</string>
     <string name="Location" translatable="false">Location</string>
     <string name="Language" translatable="false">Language</string>
@@ -41,4 +41,19 @@
     <string name="location" translatable="false">location</string>
     <string name="done" translatable="false">done</string>
     <string name="weather_alert" translatable="false">weather_alert</string>
+    <string name="notifications" translatable="false">notification :</string>
+    <string name="save" translatable="false">save</string>
+    <string name="to" translatable="false">to</string>
+    <string name="from" translatable="false">from</string>
+    <string name="are_you_sure" translatable="false">Are you sure you want to delete this location from your favourite list ?</string>
+    <string name="permission_required" translatable="false">Permission required!\nPlease  give the permission to display over apps </string>
+    <string name="empty_alarm_from" translatable="false">You must select (From) date and time!</string>
+    <string name="empty_alarm_to" translatable="false">You must select (To) date and time!</string>
+    <string name="permission" translatable="false">Permission</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="confirm_yes" translatable="false">Yes</string>
+    <string name="delet_title" translatable="false">delete from favourite</string>
+    <string name="draw_overlays" translatable="false">Please, Enable Draw Overlays permission.</string>
+    <string name="delete_alert_title" translatable="false">delete alert</string>
+    <string name="are_you_sure_alert" translatable="false">Are you sure you want to delete this alert from your list ?</string>
 </resources>

@@ -42,4 +42,10 @@
     <string name="location" translatable="false">الموقع</string>
     <string name="done" translatable="false">حفظ</string>
     <string name="weather_alert" translatable="false">تنبيه الطقس </string>
+    <string name="notifications" translatable="false">الاشعارات :</string>
+    <string name="save" translatable="false">حفظ</string>
+    <string name="to" translatable="false">الى</string>
+    <string name="from" translatable="false">من</string>
+    <string name="are_you_sure" translatable="false">Save translation
+هل أنت متأكد أنك تريد حذف هذا الموقع من قائمة المفضلة لديك ?</string>
 </resources>

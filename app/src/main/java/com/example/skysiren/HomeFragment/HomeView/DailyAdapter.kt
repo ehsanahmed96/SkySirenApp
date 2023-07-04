@@ -14,12 +14,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-class DailyAdapter(
-    var weather: WeatherDetail,
-    val context: Context,
-    val unit:String,
-    val lang:String
-) : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
+class DailyAdapter(var weather: WeatherDetail, val context: Context, val unit:String, val lang:String) : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
     private lateinit var binding: DayRowItemBinding
     val formatter = NumberFormat.getInstance(Locale(lang))
 

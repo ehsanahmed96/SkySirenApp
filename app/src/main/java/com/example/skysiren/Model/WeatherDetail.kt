@@ -3,8 +3,8 @@ package com.example.skysiren.Model
 import androidx.room.Entity
 import androidx.room.TypeConverters
 
-//@Entity(tableName = "weather" , primaryKeys = ["lat", "lon" , "fav"])
-//@TypeConverters(TypeConverter::class)
+@Entity(tableName = "weather" , primaryKeys = ["lat", "lon" , "fav"])
+@TypeConverters(TypeConverter::class)
 data class WeatherDetail(
     val lat: Double,
     val lon: Double,
@@ -75,7 +75,7 @@ data class Daily(
     val wind_gust: Double,
     val wind_speed: Double,
 )
-//@TypeConverters(TypeConverter::class)
+@TypeConverters(TypeConverter::class)
 data class Alert(
     val description: String,
     val end: Int,
