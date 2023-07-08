@@ -6,24 +6,25 @@ import com.example.skysiren.Model.FavouritWeather
 import com.example.skysiren.Model.WeatherDetail
 import kotlinx.coroutines.flow.Flow
 
-class ConcreteLocalSource (context: Context) : Localsource {
+class ConcreteLocalSource(context: Context) : Localsource {
     private val weatherDAO: WeatherDAO by lazy {
-        val dataBase :WeatherDataBase = WeatherDataBase.getInstance(context)
+        val dataBase: WeatherDataBase = WeatherDataBase.getInstance(context)
         dataBase.getWeatherDao()
     }
 
-    companion object  {
+    companion object {
         private var instance: ConcreteLocalSource? = null
         fun getInstance(context: Context): ConcreteLocalSource {
-            return instance ?: synchronized(this){
+            return instance ?: synchronized(this) {
                 val Instance = ConcreteLocalSource(context)
-                instance =  Instance
-                Instance}
+                instance = Instance
+                Instance
+            }
         }
     }
 
     override fun getWeatherFromRoom(): Flow<List<FavouritWeather>> {
-      return weatherDAO.getWeatherFromRoom()
+        return weatherDAO.getWeatherFromRoom()
     }
 
 
@@ -40,10 +41,18 @@ class ConcreteLocalSource (context: Context) : Localsource {
     }
 
     override suspend fun insertAlertToRoom(alert: Alerts) {
-       return weatherDAO.insertAlertToRoom(alert)
+        return weatherDAO.insertAlertToRoom(alert)
     }
 
     override suspend fun deletAlertFromRoom(alert: Alerts) {
-       return weatherDAO.deleteAlertFromRoom(alert)
+        return weatherDAO.deleteAlertFromRoom(alert)
+    }
+
+    override fun getOfflineWeather(): Flow<List<WeatherDetail>> {
+        return weatherDAO.getOfflineWeather()
+    }
+
+    override suspend fun insertWeather(weatherDetail: WeatherDetail) {
+        return weatherDAO.insertWeather(weatherDetail)
     }
 }

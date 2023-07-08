@@ -24,21 +24,29 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.work.Configuration
+import androidx.work.WorkManager
 import com.example.skysiren.AlertFragment.AlertViewModel.AlertViewModel
 import com.example.skysiren.AlertFragment.AlertViewModel.AlertViewModelFactory
+import com.example.skysiren.CoroutineWorker.WorkerRequest.createRequst
 import com.example.skysiren.DataBase.ConcreteLocalSource
 import com.example.skysiren.DataBase.RoomState
 import com.example.skysiren.FavouritesFragment.FavouritesModelView.FavouritViewModel
 import com.example.skysiren.FavouritesFragment.FavouritesModelView.FavouritViewModelFactory
 import com.example.skysiren.FavouritesFragment.FavouritesView.FavouirteAdapter
 import com.example.skysiren.File_name
+import com.example.skysiren.HomeFragment.HomeView.OfflineWeatherState
 import com.example.skysiren.Model.Alerts
 import com.example.skysiren.Model.Repository
+import com.example.skysiren.Model.WeatherDetail
 import com.example.skysiren.Network.Api_Client
 import com.example.skysiren.R
 import com.example.skysiren.databinding.FragmentAlertBinding
 import com.example.skysiren.databinding.SpecifingAlertBinding
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,12 +57,12 @@ class AlertFragment : Fragment(), OnClick {
     lateinit var editor: SharedPreferences.Editor
     lateinit var adapterAA: AlertAdapter
     lateinit var alertView: View
-    lateinit var alertObj : Alerts
+    lateinit var alertObj: Alerts
     lateinit var viewModel: AlertViewModel
     lateinit var alertFactory: AlertViewModelFactory
     lateinit var alertBinding: SpecifingAlertBinding  ///// for specifing alert view
-     lateinit var startDate: String
-   lateinit var endDate:String
+    lateinit var startDate: String
+    lateinit var endDate: String
     lateinit var startTime: String
     lateinit var endTime: String
 
@@ -75,7 +83,7 @@ class AlertFragment : Fragment(), OnClick {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alertObj = Alerts(1,1,2 , 2)
+        alertObj = Alerts(0, 1, 2, 2,"i")
         alertView = view
         pref = requireActivity().getSharedPreferences(File_name, Context.MODE_PRIVATE)
         editor = pref.edit()
@@ -83,6 +91,7 @@ class AlertFragment : Fragment(), OnClick {
         adapterAA = lang?.let {
             AlertAdapter(requireContext(), emptyList(), it, this)
         }!!
+
 
         alertFactory = AlertViewModelFactory(Repository.getInstance(Api_Client(),
             ConcreteLocalSource.getInstance(requireContext())))
@@ -96,34 +105,34 @@ class AlertFragment : Fragment(), OnClick {
 
         viewModel.getAlertsfromRoom()
         lifecycleScope.launch() {
-            viewModel.alertRoom.collect {result->
-                when(result) {
+            viewModel.alertRoom.collect { result ->
+                when (result) {
                     is AlertState.Loading -> {
-                        bindingAF.alertProgBar.visibility=View.VISIBLE
+                        bindingAF.alertProgBar.visibility = View.VISIBLE
                         bindingAF.alertRV.visibility = View.GONE
 
 
                     }
                     is AlertState.Success -> {
-                        bindingAF.alertProgBar.visibility=View.GONE
+                        bindingAF.alertProgBar.visibility = View.GONE
                         bindingAF.alertRV.visibility = View.VISIBLE
 
                         result.alert.let {
                             Log.i("TAG", "onViewCreated: $it")
 
                             adapterAA.submitList(it)
-                            bindingAF.alertRV.adapter=adapterAA
+                            bindingAF.alertRV.adapter = adapterAA
 
-                            if(it.isEmpty()){
+                            if (it.isEmpty()) {
                                 bindingAF.noAlertImg.visibility = View.VISIBLE
                                 bindingAF.noAlertsTxt.visibility = View.VISIBLE
-                            }else{
+                            } else {
                                 bindingAF.noAlertImg.visibility = View.GONE
                                 bindingAF.noAlertsTxt.visibility = View.GONE
                             }
 
-                        }}
-
+                        }
+                    }
 
 
                     else -> {
@@ -137,26 +146,42 @@ class AlertFragment : Fragment(), OnClick {
         bindingAF.AlertFab.setOnClickListener {
             dialog.show()
         }
+
         alertBinding.saveAlertsDataBtn.setOnClickListener {
             askForDrawOverlaysPermission {
                 if (alertBinding.startDateValue.text.isEmpty()) {
-                    Toast.makeText(requireContext(), "start date is required", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "start date is required", Toast.LENGTH_SHORT)
+                        .show()
                 } else if (alertBinding.endDateValue.text.isEmpty()) {
-                    Toast.makeText(requireContext(), "end date is required", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "end date is required", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
-                    viewModel.insertAlertToRoom(alertObj)
+                    insertToRoom()
+                    //viewModel.insertAlertToRoom(alertObj)
                     alertBinding.startDateValue.setText("")
                     alertBinding.endDateValue.setText("")
-                    Toast.makeText(requireContext(), "making alert successfully", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(),
+                        "making alert successfully",
+                        Toast.LENGTH_SHORT).show()
                     dialog.cancel()
                 }
             }
+            alertBinding.radiooGroup.setOnCheckedChangeListener { radioGroup, i ->
+                when(i){
+                    R.id.notiRB -> editor.putBoolean("noti",true).apply()
+                    R.id.alertRB -> editor.putBoolean("alert",true).apply()
+                }
+                Log.i("TAG", "onViewCreated when statement in noti or alert: $i")
+
+            }
+
+
         }
 
-        alertBinding.startDateValue.setOnClickListener{
-            setStartDateAndTime{(timeInMillis, dateInMillis) ->
-                startTime=getTimeToAlert(timeInMillis,"en")
-                startDate=getDateToAlert(dateInMillis,"en")
+        alertBinding.startDateValue.setOnClickListener {
+            setDateAndTime { (timeInMillis, dateInMillis) ->
+                startTime = getTimeToAlert(timeInMillis, "en")
+                startDate = getDateToAlert(dateInMillis, "en")
                 alertBinding.startDateValue.setText("$startDate \n $startTime")
                 alertObj.startDate = dateInMillis
                 alertObj.startimeOfAlert = timeInMillis
@@ -164,12 +189,11 @@ class AlertFragment : Fragment(), OnClick {
             }
 
 
-
         }
-        alertBinding.endDateValue.setOnClickListener{
-            setEndDateAndTime{(timeInMillis, dateInMillis) ->
-                endTime=getTimeToAlert(timeInMillis,"en")
-                endDate=getDateToAlert(dateInMillis,"en")
+        alertBinding.endDateValue.setOnClickListener {
+            setDateAndTime { (timeInMillis, dateInMillis) ->
+                endTime = getTimeToAlert(timeInMillis, "en")
+                endDate = getDateToAlert(dateInMillis, "en")
                 alertBinding.endDateValue.setText("$endDate \n $endTime")
                 alertObj.endDate = dateInMillis
                 alertObj.endTimeOfAlert = timeInMillis
@@ -178,8 +202,79 @@ class AlertFragment : Fragment(), OnClick {
 
         }
 
+
     }
-    private fun setStartDateAndTime(callback: (Pair<Long, Long>) -> Unit) {
+
+    private fun setOneTimeWorkRequest(alert: Alerts, desc: String, icon: String) {
+        createRequst(alert, desc, icon, alertView.context, alertObj.startimeOfAlert)
+    }
+
+    private fun insertToRoom() {
+        runBlocking {
+            lifecycleScope.launch() {
+                viewModel.insertAlertToRoom(alertObj)
+            }.join()
+            viewModel.getOfflineWeather()
+            lifecycleScope.launch(Dispatchers.IO) {
+                viewModel.weatherOffline.collectLatest { result ->
+                    when (result) {
+
+                        is OfflineWeatherState.Success -> {
+
+                            if (result.weather != null && result.weather.size > 0) {
+                                val weather = result.weather?.last()
+                                    ?.let {
+                                        WeatherDetail(
+                                            it.lat,
+                                            it.lon,
+                                            it.timezone,
+                                            it.timezone_offset,
+                                            it.alerts,
+                                            it.current,
+                                            it.daily,
+                                            it.hourly,
+                                        )
+                                    }
+                                if (weather != null) {
+                                    if (weather.alerts.isNullOrEmpty()) {
+                                        Log.i("TAG", "insertToRoom: alert is  null")
+                                        Log.i("TAG", "insertToRoom: ${weather.alerts?.get(0)?.description}")
+                                        setOneTimeWorkRequest(
+                                            alertObj,
+                                            getString(R.string.NoAlerts),
+                                            weather.current.weather[0].icon
+                                        )
+                                    } else {
+                                        Log.i("TAG", "insertToRoom: alert is not null")
+                                        Log.i("TAG", "insertToRoom: ${weather.alerts?.get(0)?.description}")
+                                        setOneTimeWorkRequest(
+                                            alertObj,
+                                            weather.alerts!![0].tags[0],
+                                            weather.current.weather[0].icon
+                                        )
+                                    }
+                                }
+
+                            }
+                            Log.i("TAG", "onViewCreated: has sizeeee offline mode")
+                        }
+                        else -> {
+                            Log.i("TAG", "onViewCreated: failurer")
+
+
+                        }
+                    }
+
+                }
+
+            }
+
+
+        }
+
+    }
+
+    private fun setDateAndTime(callback: (Pair<Long, Long>) -> Unit) {
         Calendar.getInstance().apply {
             this.set(Calendar.SECOND, 0)
             this.set(Calendar.MILLISECOND, 0)
@@ -211,38 +306,7 @@ class AlertFragment : Fragment(), OnClick {
             datePickerDialog.show()
         }
     }
-    private fun setEndDateAndTime(callback: (Pair<Long, Long>) -> Unit) {
-        Calendar.getInstance().apply {
-            this.set(Calendar.SECOND, 0)
-            this.set(Calendar.MILLISECOND, 0)
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                0,
-                { _, year, month, day ->
-                    this.set(Calendar.YEAR, year)
-                    this.set(Calendar.MONTH, month)
-                    this.set(Calendar.DAY_OF_MONTH, day)
-                    TimePickerDialog(
-                        requireContext(),
-                        0,
-                        { _, hour, minute ->
-                            this.set(Calendar.HOUR_OF_DAY, hour)
-                            this.set(Calendar.MINUTE, minute)
-                            callback(this.timeInMillis to this.timeInMillis.dateToLong())
-                        },
-                        this.get(Calendar.HOUR_OF_DAY),
-                        this.get(Calendar.MINUTE),
-                        false
-                    ).show()
-                },
-                this.get(Calendar.YEAR),
-                this.get(Calendar.MONTH),
-                this.get(Calendar.DAY_OF_MONTH)
-            )
-            datePickerDialog.datePicker.minDate = Calendar.getInstance().timeInMillis
-            datePickerDialog.show()
-        }
-    }
+
     fun Long.dateToLong(): Long {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = this
@@ -253,12 +317,13 @@ class AlertFragment : Fragment(), OnClick {
             set(Calendar.MILLISECOND, 0)
         }.timeInMillis
     }
-    fun getDateToAlert(time: Long, language: String): String{
-        return SimpleDateFormat("M/d/yyyy",Locale(language)).format(time)
+
+    fun getDateToAlert(time: Long, language: String): String {
+        return SimpleDateFormat("M/d/yyyy", Locale(language)).format(time)
     }
 
     fun getTimeToAlert(time: Long, language: String): String {
-        return SimpleDateFormat("h:mm a",Locale(language)).format(time)
+        return SimpleDateFormat("h:mm a", Locale(language)).format(time)
     }
 
 
@@ -285,11 +350,8 @@ class AlertFragment : Fragment(), OnClick {
     }
 
 
-
     private val runtimePermissionResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { }
-
-
 
 
     companion object {

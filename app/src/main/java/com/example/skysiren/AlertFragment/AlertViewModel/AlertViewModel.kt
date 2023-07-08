@@ -1,9 +1,11 @@
 package com.example.skysiren.AlertFragment.AlertViewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.skysiren.AlertFragment.AlertView.AlertState
 import com.example.skysiren.DataBase.RoomState
+import com.example.skysiren.HomeFragment.HomeView.OfflineWeatherState
 import com.example.skysiren.Model.Alerts
 import com.example.skysiren.Model.RepositoryInterface
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,9 @@ class AlertViewModel(private val repo: RepositoryInterface) : ViewModel() {
     private var alertFromRoom: MutableStateFlow<AlertState> = MutableStateFlow<AlertState>(
         AlertState.Loading)
     val alertRoom: StateFlow<AlertState> = alertFromRoom
+
+    private var weatherOfflineState : MutableStateFlow<OfflineWeatherState> = MutableStateFlow(OfflineWeatherState.Loading)
+    val weatherOffline: StateFlow<OfflineWeatherState> = weatherOfflineState
 
     fun getAlertsfromRoom() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -41,6 +46,18 @@ class AlertViewModel(private val repo: RepositoryInterface) : ViewModel() {
     fun deletAlertFromRoom(alert: Alerts){
         viewModelScope.launch (Dispatchers.IO){
             repo.deletAlertFromRoom(alert)
+        }
+    }
+    fun getOfflineWeather(){
+        viewModelScope.launch (Dispatchers.IO){
+            repo.getOfflineweather()
+                ?.catch { e->
+                    weatherOfflineState.value = OfflineWeatherState.Failure(e)
+                }
+                ?.collect{data->
+                    weatherOfflineState.value= OfflineWeatherState.Success(data)
+                    Log.i("TAG", "getOfflineWeather: get weather from room")
+                }
         }
     }
 }

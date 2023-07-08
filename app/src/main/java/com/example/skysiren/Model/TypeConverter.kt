@@ -19,6 +19,8 @@ import com.google.gson.reflect.TypeToken
         val gson = Gson()
         return gson.toJson(list)
     }
+
+
      @TypeConverter
      fun fromCurrentToString(current:Current) = Gson().toJson(current)
      @TypeConverter

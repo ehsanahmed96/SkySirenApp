@@ -41,6 +41,14 @@ class Repository private constructor(
         return local.getAllAlertsFromRoom()
     }
 
+    override fun getOfflineweather(): Flow<List<WeatherDetail>> {
+        return local.getOfflineWeather()
+    }
+
+    override suspend fun insertWeather(weatherDetail: WeatherDetail) {
+       return local.insertWeather(weatherDetail)
+    }
+
     override suspend fun insertWeatherToRoom(weather: FavouritWeather) {
         return local.insertWeatherToRoom(weather)
     }

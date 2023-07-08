@@ -48,6 +48,8 @@ import com.google.android.gms.location.*
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -121,6 +123,8 @@ class HomeFragment : Fragment(){
 
                         }
                         is ApiState.Success -> {
+                            viewModel.insertWeather(result.weather)
+                            Log.i("TAG", "onViewCreated: insert weather to room")
                             bindingHF.progressBar.visibility = View.GONE
                             bindingHF.scrollView2.visibility = View.VISIBLE
                             display(result.weather, language, measureUnit, unitTemp)
@@ -133,11 +137,57 @@ class HomeFragment : Fragment(){
                         }
                     }
 
-
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "chech youre internet", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "chech your internet \n this is not Updating data ", Toast.LENGTH_LONG).show()
+            Log.i("TAG", "onViewCreated: offline mode")
+            viewModel.getOfflineWeather()
+            lifecycleScope.launch {
+                viewModel.weatherOffline.collectLatest{result ->
+                    when(result){
+                        is OfflineWeatherState.Loading -> {
+                            bindingHF.progressBar.visibility = View.VISIBLE
+                            bindingHF.scrollView2.visibility = View.GONE
+                            Log.i("TAG", "onViewCreated: loading")
+
+                        }
+                        is OfflineWeatherState.Success -> {
+                            bindingHF.progressBar.visibility = View.GONE
+                            bindingHF.scrollView2.visibility = View.VISIBLE
+                            if (result.weather != null && result.weather.size > 0){
+                                 val weather =result.weather?.last()
+                                    ?.let {  WeatherDetail(
+                                        it.lat,
+                                        it.lon,
+                                        it.timezone,
+                                        it.timezone_offset,
+                                        it.alerts,
+                                        it.current,
+                                        it.daily,
+                                        it.hourly,
+                                    )
+                                      }
+                                if (weather != null) {
+                                    display(weather, language, measureUnit, unitTemp)
+                                }
+                                Log.i("TAG", "onViewCreated: has sizeeee offline mode")
+                            }else
+                                Log.i("TAG", "onViewCreated: empty data")
+
+
+                        }
+                        else -> {
+                            Log.i("TAG", "onViewCreated: failurer")
+
+
+                        }
+                    }
+
+                }
+            }
+
+
         }
 
     }

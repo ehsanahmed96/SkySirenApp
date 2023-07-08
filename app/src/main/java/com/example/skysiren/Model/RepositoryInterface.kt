@@ -7,6 +7,9 @@ interface RepositoryInterface {
 
     fun getWeatherFromRoom() : Flow<List<FavouritWeather>>
     fun getAllAlertsFromRoom() : Flow <List<Alerts>>
+    fun getOfflineweather() : Flow <List<WeatherDetail>>
+
+    suspend fun insertWeather(weatherDetail: WeatherDetail)
 
     suspend fun insertWeatherToRoom(weather: FavouritWeather)
     suspend fun deletWeatherFromRoom(weather : FavouritWeather)
