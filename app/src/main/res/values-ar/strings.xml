@@ -37,7 +37,9 @@
     <string name="Favourites" translatable="false">المفضله</string>
     <string name="NoPlacesInFavourites" translatable="false">لا يوجد أماكن فى المفضله</string>
     <string name="Alerts" translatable="false">التنبيه</string>
-    <string name="NoAlerts" translatable="false">لا يوجد تنبيهات</string>
+    <string name="emptyAlert" translatable="false">لا يوجد تنبيهات </string>
+    <string name="NoAlerts" translatable="false">
+لا تنبيهات في هذا الموقع الطقس جيد</string>
     <string name="initial_setup" translatable="false">الاعدادات الاوليه </string>
     <string name="location" translatable="false">الموقع</string>
     <string name="done" translatable="false">حفظ</string>
@@ -46,6 +48,21 @@
     <string name="save" translatable="false">حفظ</string>
     <string name="to" translatable="false">الى</string>
     <string name="from" translatable="false">من</string>
-    <string name="are_you_sure" translatable="false">Save translation
+    <string name="are_you_sure" translatable="false">
 هل أنت متأكد أنك تريد حذف هذا الموقع من قائمة المفضلة لديك ?</string>
+    <string name="permission_required" translatable="false">
+الإذن مطلوب! \n الرجاء منح الإذن بالعرض فوق التطبيقات </string>
+    <string name="empty_alarm_from" translatable="false">يجب عليك تحديد بدايه التاريخ والوقت!</string>
+    <string name="empty_alarm_to" translatable="false">يجب عليك تحديد نهايه التاريخ والوقت!</string>
+    <string name="permission" translatable="false">الإذن</string>
+    <string name="ok" translatable="false">تم</string>
+    <string name="confirm_yes" translatable="false">نعم</string>
+    <string name="delet_title" translatable="false">الحذف من المفضله</string>
+    <string name="draw_overlays" translatable="false">
+من فضلك ، قم بتمكين إذن العرض فوق التطبيقات.</string>
+    <string name="delete_alert_title" translatable="false">حذف التنبيه</string>
+    <string name="are_you_sure_alert" translatable="false">
+هل أنت متأكد أنك تريد حذف هذا التنبيه من قائمتك؟</string>
+    <string name="notification" translatable="false">الاشعارات</string>
+    <string name="channel_name" translatable="false">اشعارات من تطبيق skySiren</string>
 </resources>

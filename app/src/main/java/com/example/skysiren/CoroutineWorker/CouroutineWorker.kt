@@ -7,10 +7,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.Editor
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.media.RingtoneManager
 import android.os.Build
 import android.provider.Settings
 import android.provider.Settings.Global.getString
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
@@ -26,11 +32,13 @@ import com.example.skysiren.Model.Repository
 import com.example.skysiren.Model.RepositoryInterface
 import com.example.skysiren.Network.Api_Client
 import com.example.skysiren.R
+import com.example.skysiren.databinding.ActivityAlertPopUpBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.lang.reflect.Type
+
 
 const val channel_id = "channelId"
 
@@ -47,69 +55,56 @@ class CouroutineWorker(private val context: Context, parameters: WorkerParameter
 
         pref = context.getSharedPreferences(File_name, Context.MODE_PRIVATE)
         editor = pref.edit()
-        val isNotifi = pref.getBoolean("noti", false)
-        Log.i("TAG", "doWork:${isNotifi.toString()} ")
-
-        val isAlert = pref.getBoolean("alert", false)
-        Log.i("TAG", "doWork:${isAlert.toString()} ")
 
 
         val alert = inputData.getString("alertobj")?.let { convertToUserAlert(it) }
-        Log.i("TAG", "doWork if alert data: $alert")
         val desc = inputData.getString("desc")
         val icon = inputData.getString("icon")
-        val time = inputData.getLong("startTimeOfAlert", 0L)
-        Log.i("TAG", "doWork:${alert?.isAlert} ")
+        val isAlertOrNotifi = inputData.getString("isAlertOrNotifi")
+        Log.i("TAG", "doWork: $isAlertOrNotifi")
+
 
         repo = Repository.getInstance(Api_Client(), ConcreteLocalSource(applicationContext))
 
         if (alert != null) {
-            Log.i("TAG", "doWork: alert not equal null")
             if (System.currentTimeMillis() >= alert.startimeOfAlert && System.currentTimeMillis() <= alert.endTimeOfAlert) {
-                if (isNotifi) {
+                if (isAlertOrNotifi == "notifi") {
                     Log.i("TAG", "doWork: enter the notifi scoope")
                     createNotificationChannel()
                     val builder = NotificationCompat.Builder(context, channel_id)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle("my notification")
-                        .setContentText("Dwonloading...")
+                        .setSmallIcon(R.drawable.applogo)
+                        .setContentTitle("Notification SkySiren")
+                        .setContentText(desc)
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
                         .setAutoCancel(true)
-                    builder.setProgress(0, 0, true)
-                    builder.setOngoing(true)
-                    editor.putBoolean("noti", false).apply()
+                        .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                        .setVibrate(longArrayOf(0, 1000, 500, 1000))
+                        .setLights(Color.BLUE, 2000, 1000)
                     val notificationManager =
-                       context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                        context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                     notificationManager.notify(11, builder.build())
                 }
-                Log.i("TAG", "doWork: enter the time")
-                if (alert.isAlert == "i") {
+               else if (isAlertOrNotifi == "alert") {
                     if (Settings.canDrawOverlays(context)) {
-                        Log.i("TAG", "doWork: alert is making in do work alert scoop")
                         withContext(Dispatchers.Main) {
                             val intent = Intent(context, AlertPopUpActivity::class.java)
                             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_INCLUDE_STOPPED_PACKAGES)
                             intent.putExtra("desc", desc)
                             intent.putExtra("icon", icon)
                             context.startActivity(intent)
+
                         }
-                        editor.putBoolean("alert", false).apply()
 
                     }
                 }
-                WorkerRequest.createRequst(
-                    alert,
-                    desc.toString(),
-                    icon.toString(),
-                    context,
-                    (time + 86400000)
-                )
 
-            } else {
-                repo.deletAlertFromRoom(alert)
-                WorkerRequest.remove(alert.startDate.toString(), context)
+
             }
         }
+        if (alert != null) {
+            (repo as Repository).deletAlertFromRoom(alert)
+        }
+        WorkerRequest.remove(alert?.startDate.toString(), context)
         return Result.success()
     }
 
@@ -131,4 +126,6 @@ class CouroutineWorker(private val context: Context, parameters: WorkerParameter
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+
 }

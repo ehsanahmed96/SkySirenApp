@@ -15,6 +15,7 @@ object WorkerRequest {
         desc: String,
         icon: String,
         context: Context,
+        alertOrNotifi:String,
         startTimeOfAlert: Long,
     ) {
 
@@ -24,9 +25,10 @@ object WorkerRequest {
             .putString("desc", desc)
             .putString("icon", icon)
             .putLong("startTimeOfAlert", startTimeOfAlert)
+            .putString("isAlertOrNotifi" , alertOrNotifi)
             .build()
 
-        val request = PeriodicWorkRequestBuilder<CouroutineWorker>(1, TimeUnit.DAYS)
+        val request = OneTimeWorkRequestBuilder<CouroutineWorker>()
             .setInitialDelay(startTimeOfAlert - Calendar.getInstance().timeInMillis,
                 TimeUnit.MILLISECONDS)
             .setInputData(requestData)
@@ -37,7 +39,7 @@ object WorkerRequest {
 
         WorkManager
             .getInstance(context)
-            .enqueueUniquePeriodicWork("${alert.startDate}", ExistingPeriodicWorkPolicy.REPLACE, request)
+            .enqueue( request)
         Log.i("TAG", "createRequst: enqueue  work request ${alert.startDate}")
 
 

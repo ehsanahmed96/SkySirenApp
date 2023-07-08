@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
+import com.example.skysiren.Model.Alerts
 import com.example.skysiren.Model.Icons
 import com.example.skysiren.databinding.ActivityAlertPopUpBinding
 
@@ -28,18 +29,17 @@ class AlertPopUpActivity : AppCompatActivity() {
     }
 
     private fun startSound() {
-        if (mMediaPlayer == null) { //mMediaPkayer is your variable
+        if (mMediaPlayer == null) {
             mMediaPlayer = MediaPlayer.create(
                 this,
                 R.raw.alert_sound
-            ) //raw is the folder where you have the audio files or sounds, water is the audio file (is a example right)
-            mMediaPlayer!!.isLooping = true //to repeat again n again
-            mMediaPlayer!!.start() //to start the sound
+            )
+            mMediaPlayer!!.isLooping = true
+            mMediaPlayer!!.start()
         }
     }
 
     private fun setUiAndSound() {
-        Log.i("TAG", "setUiAndSound: souuuuuuuund")
         startSound()
         Icons.replaceIcons(icon, binding.image)
         binding.alertDesc.text = description

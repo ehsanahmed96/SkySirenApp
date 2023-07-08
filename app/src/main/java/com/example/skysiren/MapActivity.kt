@@ -74,6 +74,12 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
                startActivity(intent)
                 finish()
            }
+            else if(pref.getString("flag","none").equals("setting")){
+                val Intent = Intent()
+                Intent.putExtra("lat", latLng.latitude.toString())
+                Intent.putExtra("lon", latLng.longitude.toString())
+                finish()
+            }
         }
         builder.setNegativeButton(android.R.string.cancel){ dialog, which -> }
         builder.show()

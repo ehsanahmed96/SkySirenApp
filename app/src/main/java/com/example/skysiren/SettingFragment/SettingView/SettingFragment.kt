@@ -124,6 +124,7 @@ class SettingFragment : Fragment() {
                 R.id.gps -> editor.putString("location", "gps").apply()
                 R.id.map -> {
                     editor.putString("location", "map").apply()
+                    editor.putString("flag","setting").apply()
                     val intent = Intent(requireContext(), MapActivity::class.java)
                     startActivity(intent)
                     activity?.finish()

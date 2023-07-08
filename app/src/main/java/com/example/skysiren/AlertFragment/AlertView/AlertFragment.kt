@@ -60,11 +60,12 @@ class AlertFragment : Fragment(), OnClick {
     lateinit var alertObj: Alerts
     lateinit var viewModel: AlertViewModel
     lateinit var alertFactory: AlertViewModelFactory
-    lateinit var alertBinding: SpecifingAlertBinding  ///// for specifing alert view
+    lateinit var alertBinding: SpecifingAlertBinding
     lateinit var startDate: String
     lateinit var endDate: String
     lateinit var startTime: String
     lateinit var endTime: String
+    lateinit var alertOrNotifi: String
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -83,7 +84,7 @@ class AlertFragment : Fragment(), OnClick {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        alertObj = Alerts(0, 1, 2, 2,"i")
+        alertObj = Alerts(0, 1, 2, 2)
         alertView = view
         pref = requireActivity().getSharedPreferences(File_name, Context.MODE_PRIVATE)
         editor = pref.edit()
@@ -166,15 +167,12 @@ class AlertFragment : Fragment(), OnClick {
                     dialog.cancel()
                 }
             }
-            alertBinding.radiooGroup.setOnCheckedChangeListener { radioGroup, i ->
-                when(i){
-                    R.id.notiRB -> editor.putBoolean("noti",true).apply()
-                    R.id.alertRB -> editor.putBoolean("alert",true).apply()
-                }
-                Log.i("TAG", "onViewCreated when statement in noti or alert: $i")
-
+            if (alertBinding.notiRB.isChecked) {
+             alertOrNotifi = "notifi"
             }
-
+            else if(alertBinding.alertRB.isChecked){
+                alertOrNotifi = "alert"
+            }
 
         }
 
@@ -205,8 +203,18 @@ class AlertFragment : Fragment(), OnClick {
 
     }
 
-    private fun setOneTimeWorkRequest(alert: Alerts, desc: String, icon: String) {
-        createRequst(alert, desc, icon, alertView.context, alertObj.startimeOfAlert)
+    private fun setOneTimeWorkRequest(
+        alert: Alerts,
+        desc: String,
+        icon: String,
+        alertOrNotifi: String,
+    ) {
+        createRequst(alert,
+            desc,
+            icon,
+            alertView.context,
+            alertOrNotifi,
+            alertObj.startimeOfAlert)
     }
 
     private fun insertToRoom() {
@@ -238,19 +246,23 @@ class AlertFragment : Fragment(), OnClick {
                                 if (weather != null) {
                                     if (weather.alerts.isNullOrEmpty()) {
                                         Log.i("TAG", "insertToRoom: alert is  null")
-                                        Log.i("TAG", "insertToRoom: ${weather.alerts?.get(0)?.description}")
+                                        Log.i("TAG",
+                                            "insertToRoom: ${weather.alerts?.get(0)?.description}")
                                         setOneTimeWorkRequest(
                                             alertObj,
                                             getString(R.string.NoAlerts),
-                                            weather.current.weather[0].icon
+                                            weather.current.weather[0].icon,
+                                            alertOrNotifi
                                         )
                                     } else {
                                         Log.i("TAG", "insertToRoom: alert is not null")
-                                        Log.i("TAG", "insertToRoom: ${weather.alerts?.get(0)?.description}")
+                                        Log.i("TAG",
+                                            "insertToRoom: ${weather.alerts?.get(0)?.description}")
                                         setOneTimeWorkRequest(
                                             alertObj,
                                             weather.alerts!![0].tags[0],
-                                            weather.current.weather[0].icon
+                                            weather.current.weather[0].icon,
+                                            alertOrNotifi
                                         )
                                     }
                                 }
