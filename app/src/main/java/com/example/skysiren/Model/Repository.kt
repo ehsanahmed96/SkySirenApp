@@ -5,7 +5,7 @@ import com.example.skysiren.Network.RemoteSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class Repository private constructor(
+class Repository(
     var local: Localsource,
     var remote: RemoteSource
 ) : RepositoryInterface {
