@@ -46,6 +46,7 @@ The project utilizes the following dependencies:
 
 4- WorkManager - Library for managing background tasks, such as weather updates and notifications.
 Google Maps API - Enables map functionality and location selection.
+
 5- Lottie: For the splash screen animation.
 
 # Unit Testing
