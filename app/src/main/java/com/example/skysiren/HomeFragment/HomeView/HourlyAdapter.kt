@@ -34,7 +34,7 @@ class HourlyAdapter(
 ) : RecyclerView.Adapter<HourlyAdapter.ViewHolder>() {
     private lateinit var binding: HourRowItemBinding
 
-    val formatter = NumberFormat.getInstance(Locale(lang))
+    val number = NumberFormat.getInstance(Locale(lang))
 
     inner class ViewHolder(var binding: HourRowItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -43,13 +43,9 @@ class HourlyAdapter(
         val inflater: LayoutInflater =
             parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = HourRowItemBinding.inflate(inflater, parent, false)
-        Log.i(ContentValues.TAG, "onCreateViewHolder: ")
         return ViewHolder(binding)
     }
 
-    fun setList(list: WeatherDetail) {
-        weather = list
-    }
 
     override fun getItemCount(): Int {
         return weather.hourly.size
@@ -59,29 +55,29 @@ class HourlyAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (weather != null) {
 
-            var Hour: Hourly = weather.hourly[position]
-            Icons.replaceIcons(Hour.weather.get(0).icon , holder.binding.imagHourRV)
-            holder.binding.hourTxt.text = getTime(Hour.dt, weather.timezone)
-            val formattedNumber = formatter.format(Hour.temp.toInt())
+            var HourList: Hourly = weather.hourly[position]
+            Icons.replaceIcons(HourList.weather.get(0).icon , holder.binding.imagHourRV)
+            holder.binding.hourTxt.text = getZoneTime(HourList.dt, weather.timezone)
+            val tempFormatted = number.format(HourList.temp.toInt())
             when (unit) {
                 "metric" -> {
 
-                    holder.binding.tempTxt.text = "${formattedNumber}°C"
+                    holder.binding.tempTxt.text = "${tempFormatted}°C"
                 }
                 "imperial" -> {
 
-                    holder.binding.tempTxt.text = "${formattedNumber}°F"
+                    holder.binding.tempTxt.text = "${tempFormatted}°F"
                 }
                 else -> {
 
-                    holder.binding.tempTxt.text = "${formattedNumber}°K"
+                    holder.binding.tempTxt.text = "${tempFormatted}°K"
                 }
             }
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun getTime(dt:Int, timeZone: String): String {
+    fun getZoneTime(dt:Int, timeZone: String): String {
         val instant = Instant.ofEpochSecond(dt.toLong())
         val zoneId = ZoneId.of(timeZone)
         val zonedDateTime = instant.atZone(zoneId)

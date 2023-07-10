@@ -342,20 +342,49 @@ class AlertFragment : Fragment(), OnClick {
     @RequiresApi(Build.VERSION_CODES.M)
     fun askForDrawOverlaysPermission(callback: () -> Unit) {
         if (!Settings.canDrawOverlays(requireView().context)) {
-            AlertDialog.Builder(requireView().context)
-                .setTitle(R.string.permission)
-                .setMessage(R.string.permission_required)
-                .setPositiveButton(R.string.ok) { _, _ ->
-                    val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
-                    intent.setClassName(
-                        "com.miui.securitycenter",
-                        "com.miui.permcenter.permissions.PermissionsEditorActivity"
-                    )
-                    intent.putExtra("extra_pkgname", requireView().context.packageName)
-                    runtimePermissionResultLauncher.launch(intent)
-                }
-                .setIcon(R.drawable.permission)
-                .show()
+//            AlertDialog.Builder(requireView().context)
+//                .setTitle(R.string.permission)
+//                .setMessage(R.string.permission_required)
+//                .setPositiveButton(R.string.ok) { _, _ ->
+//                    val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
+//                    intent.setClassName(
+//                        "com.miui.securitycenter",
+//                        "com.miui.permcenter.permissions.PermissionsEditorActivity"
+//                    )
+//                    intent.putExtra("extra_pkgname", requireView().context.packageName)
+//                    runtimePermissionResultLauncher.launch(intent)
+//                }
+//                .setIcon(R.drawable.permission)
+//                .show()
+            if ("xiaomi" == Build.MANUFACTURER.lowercase(Locale.ROOT)) {
+                val intent = Intent("miui.intent.action.APP_PERM_EDITOR")
+                intent.setClassName(
+                    "com.miui.securitycenter",
+                    "com.miui.permcenter.permissions.PermissionsEditorActivity"
+                )
+                intent.putExtra("extra_pkgname", requireView().context.packageName)
+                AlertDialog.Builder(requireView().context)
+                    .setTitle(R.string.draw_overlays)
+                    .setMessage(R.string.permission_required)
+                    .setPositiveButton(R.string.ok) { dialog, which ->
+                        startActivity(intent)
+                    }
+                    .setIcon(R.drawable.permission)
+                    .show()
+            } else {
+                AlertDialog.Builder(requireView().context)
+                    .setTitle(R.string.permission)
+                    .setMessage(R.string.permission_required)
+                    .setPositiveButton(R.string.ok) { _, _ ->
+                        val permissionIntent = Intent(
+                            Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                            Uri.parse("package:" + requireView().context.packageName)
+                        )
+                        runtimePermissionResultLauncher.launch(permissionIntent)
+                    }
+                    .setIcon(R.drawable.permission)
+                    .show()
+            }
         } else {
             callback() // Call the callback if the permission is already granted
         }

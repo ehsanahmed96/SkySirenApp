@@ -17,7 +17,7 @@ import java.util.*
 class DailyAdapter(var weather: WeatherDetail, val context: Context, val unit:String, val lang:String)
     : RecyclerView.Adapter<DailyAdapter.ViewHolder>() {
     private lateinit var binding: DayRowItemBinding
-    val formatter = NumberFormat.getInstance(Locale(lang))
+    val number = NumberFormat.getInstance(Locale(lang))
 
     inner class ViewHolder(var binding: DayRowItemBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -44,20 +44,20 @@ class DailyAdapter(var weather: WeatherDetail, val context: Context, val unit:St
            Icons.replaceIcons(Day.weather.get(0).icon , holder.binding.rvImgWDay)
             holder.binding.txtDayName.text = getDay(Day.dt,lang)
             holder.binding.rvTxtTemp.text = Day.weather.get(0).description
-            val formattedNumber1 = formatter.format(Day.temp.min.toInt())
-            val formattedNumber2 = formatter.format(Day.temp.max.toInt())
+            val tempFormattedMin = number.format(Day.temp.min.toInt())
+            val tempFormattedMax = number.format(Day.temp.max.toInt())
             when (unit) {
                 "metric" -> {
 
-                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°C"
+                    holder.binding.rvNumTemp.text = "${tempFormattedMin}/${tempFormattedMax}°C"
                 }
                 "imperial" -> {
 
-                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°F"
+                    holder.binding.rvNumTemp.text = "${tempFormattedMin}/${tempFormattedMax}°F"
                 }
                 else -> {
 
-                    holder.binding.rvNumTemp.text = "${formattedNumber1}/${formattedNumber2}°K"
+                    holder.binding.rvNumTemp.text = "${tempFormattedMin}/${tempFormattedMax}°K"
                 }
             }
 

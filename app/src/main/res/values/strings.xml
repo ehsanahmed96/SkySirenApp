@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">SkySiren</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="LocationName" translatable="false">Elqalupia,Egypt</string>
+    <string name="LocationName" translatable="false">Al Qalyubia Governorate/ Egypt</string>
     <string name="ultra_violet" translatable="false">Ultra Violet</string>
     <string name="visibility" translatable="false">Visibility</string>
     <string name="cloud" translatable="false">Cloud</string>

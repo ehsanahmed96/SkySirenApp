@@ -26,7 +26,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="300sp"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_noti"
+            android:background="#1C3E81"
             android:padding="12dp">
 
             <androidx.cardview.widget.CardView

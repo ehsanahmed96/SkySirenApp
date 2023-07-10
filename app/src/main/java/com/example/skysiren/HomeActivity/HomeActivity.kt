@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.Navigation.findNavController
@@ -41,15 +42,15 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         bindingHA = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(bindingHA.root)
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         pref = getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
-        val logged = pref.getBoolean("setUpComplete", false)
+        val loggedOrNot = pref.getBoolean("setUpComplete", false)
 
 
-        if (!logged) {
+        if (!loggedOrNot) {
             val intent = Intent(this, InitialSetupActivity::class.java)
             Log.i("TAG", "onCreate: home activity go to initial set up")
             startActivity(intent)
@@ -119,7 +120,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastLocation() {
+    public fun getLastLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
                 requestNewLocationData()
@@ -160,10 +161,8 @@ class HomeActivity : AppCompatActivity() {
             val mLastLocation: Location? = locationResult.lastLocation
             if (mLastLocation != null) {
                 lat = mLastLocation.latitude
-                Log.i("TAG", "onLocationResult:$lat ")
                 pref.edit().putString("lat", lat.toString()).apply()
                 lon = mLastLocation.longitude
-                Log.i("TAG", "onLocationResult: $lon")
                 pref.edit().putString("lon", lon.toString()).apply()
             }
         }

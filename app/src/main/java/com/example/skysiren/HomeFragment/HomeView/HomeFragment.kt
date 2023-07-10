@@ -85,10 +85,18 @@ class HomeFragment : Fragment(){
         pref = requireActivity().getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
         editor = pref.edit()
 
-        latitude = pref.getString("lat", null)?.toDoubleOrNull() ?: 0.0
-        Log.i("TAG", "onViewCreated home fragment: $latitude")
-        longitude = pref.getString("lon", null)?.toDoubleOrNull() ?: 0.0
-        Log.i("TAG", "onViewCreated home fragment: $longitude")
+        if (pref.getString("location", "gps").equals("gps")){
+
+            latitude = pref.getString("lat", null)?.toDoubleOrNull() ?: 0.0
+            longitude = pref.getString("lon", null)?.toDoubleOrNull() ?: 0.0
+
+        }else if(pref.getString("location", "map").equals("map")){
+
+            latitude = pref.getString("latMap", null)?.toDoubleOrNull() ?: 0.0
+            longitude = pref.getString("lonMap", null)?.toDoubleOrNull() ?: 0.0
+        }
+
+
         bindingHF = FragmentHomeBinding.inflate(inflater, container, false)
 
         return bindingHF.root
@@ -98,7 +106,6 @@ class HomeFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         editor.putString("flag", "home").apply()
-        var notification = pref.getBoolean("noti" , false).toString() ////boolean value to notification true or false
         var language = pref.getString("lang" ,"non").toString()
         var unitTemp = pref.getString("temp" , "standard").toString()
         var measureUnit = pref.getString("measureUnit","m/s").toString()
@@ -171,14 +178,13 @@ class HomeFragment : Fragment(){
                                 if (weather != null) {
                                     display(weather, language, measureUnit, unitTemp)
                                 }
-                                Log.i("TAG", "onViewCreated: has sizeeee offline mode")
                             }else
                                 Log.i("TAG", "onViewCreated: empty data")
 
 
                         }
                         else -> {
-                            Log.i("TAG", "onViewCreated: failurer")
+
 
 
                         }
@@ -220,7 +226,7 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun display(result: WeatherDetail, lang: String, measureUnit: String, unit: String) {
-        val formatter = NumberFormat.getInstance(Locale(lang))
+        val numFormatter = NumberFormat.getInstance(Locale(lang))
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: List<Address> =
             geocoder.getFromLocation(result.lat, result.lon, 1) as List<Address>
@@ -235,8 +241,8 @@ class HomeFragment : Fragment(){
         Icons.replaceIcons(result.current.weather.get(0).icon, bindingHF.iconWeather)
 
         if (addresses.isNotEmpty()) {
-            Log.i("TAG", "getFullAddress: ${addresses[0].locality}")
-            bindingHF.LocationName.text = "${addresses[0].locality}/${addresses[0].countryName}"
+            Log.i("TAG", "getFullAddress: ${addresses[0].adminArea}")
+            bindingHF.LocationName.text = "${addresses[0].adminArea}/${addresses[0].countryName}"
         }
         bindingHF.dateTxt.text = date(lang)
 
@@ -252,7 +258,7 @@ class HomeFragment : Fragment(){
 
         bindingHF.valueVisibility.text = "${result.current.visibility} m"
 
-        val formattedNumber = formatter.format(result.current.temp)
+        val formattedNumber = numFormatter.format(result.current.temp)
 
         when (unit) {
             "metric" -> {

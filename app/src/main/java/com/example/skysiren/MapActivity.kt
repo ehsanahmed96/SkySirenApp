@@ -45,8 +45,9 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
 
         gMap.setOnMapClickListener(GoogleMap.OnMapClickListener {
             Location = LatLng(it.latitude, it.longitude)
-            pref.edit().putString("lat", it.latitude.toString()).apply()
-            pref.edit().putString("lon", it.longitude.toString()).apply()
+            pref.edit().putString("location","map").apply()
+            pref.edit().putString("latMap", it.latitude.toString()).apply()//
+            pref.edit().putString("lonMap", it.longitude.toString()).apply()//
             gMap.addMarker(MarkerOptions().position(Location).title("location"))
             gMap.moveCamera(CameraUpdateFactory.newLatLng(Location))
             confirm(Location)
@@ -91,11 +92,15 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback,GoogleMap.OnMarkerCl
         try{
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()){
-                var city = addresses[0].locality
-                Log.i("TAG", "getFullAddress city: $city")
-                var country = addresses[0].countryName
-                Log.i("TAG", "getFullAddress country: $country")
-                allAddress = "$city,$country"
+                var city = addresses[0].adminArea
+                if(city == null){
+                   Toast.makeText(this , "choose more specefic area" , Toast.LENGTH_SHORT).show()
+                }else {
+                    Log.i("TAG", "getFullAddress city: $city")
+                    var country = addresses[0].countryName
+                    Log.i("TAG", "getFullAddress country: $country")
+                    allAddress = "$city,$country"
+                }
             }
         }catch (e: IOException){
             Log.e("TAG", "getFullAddress: ${e.message}" )
