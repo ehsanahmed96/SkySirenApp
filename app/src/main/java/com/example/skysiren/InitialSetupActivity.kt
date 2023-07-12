@@ -23,7 +23,7 @@ class InitialSetupActivity : AppCompatActivity() {
 
         bindingISet.btnSetUpDone.setOnClickListener {
             pref.edit().putBoolean("setUpComplete", true).apply()
-            setUpComplete = true
+           // setUpComplete = true
             if (bindingISet.rbgps.isChecked) {
                 pref.edit().putString("location", "gps").apply()
                 Log.i("TAG", "onCreate:initial set up location is gps ")
