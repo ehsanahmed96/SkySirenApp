@@ -10,4 +10,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="darkblue">#000046</color>
     <color name="fab_color">#FFEB3B</color>
+    <color name="stroke_color">#6D000000</color>
+    <color name="heart_back">#85FFFFFF</color>
 </resources>

@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.icu.lang.UCharacter.UnicodeBlock.ARABIC
+import android.icu.lang.UScript.ARABIC
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
@@ -51,16 +53,20 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.awt.font.NumericShaper.ARABIC
+import java.lang.Character.UnicodeBlock.ARABIC
+import java.text.DecimalFormatSymbols
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.time.format.DecimalStyle
 import java.util.*
 import java.text.NumberFormat
+import java.time.format.DateTimeFormatterBuilder
 
 
 const val api_key = "958570d9d213a63daaf4a092ec70aa5b"
 
-class HomeFragment : Fragment(){
+class HomeFragment : Fragment() {
     lateinit var bindingHF: FragmentHomeBinding
     lateinit var viewModel: HomeViewModel
     lateinit var homeFactory: HomeViewModelFactory
@@ -85,12 +91,12 @@ class HomeFragment : Fragment(){
         pref = requireActivity().getSharedPreferences("PrefFile", Context.MODE_PRIVATE)
         editor = pref.edit()
 
-        if (pref.getString("location", "gps").equals("gps")){
+        if (pref.getString("location", "gps").equals("gps")) {
 
             latitude = pref.getString("lat", null)?.toDoubleOrNull() ?: 0.0
             longitude = pref.getString("lon", null)?.toDoubleOrNull() ?: 0.0
 
-        }else if(pref.getString("location", "map").equals("map")){
+        } else if (pref.getString("location", "map").equals("map")) {
 
             latitude = pref.getString("latMap", null)?.toDoubleOrNull() ?: 0.0
             longitude = pref.getString("lonMap", null)?.toDoubleOrNull() ?: 0.0
@@ -106,9 +112,9 @@ class HomeFragment : Fragment(){
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         editor.putString("flag", "home").apply()
-        var language = pref.getString("lang" ,"non").toString()
-        var unitTemp = pref.getString("temp" , "standard").toString()
-        var measureUnit = pref.getString("measureUnit","m/s").toString()
+        var language = pref.getString("lang", "ar").toString()
+        var unitTemp = pref.getString("temp", "standard").toString()
+        var measureUnit = pref.getString("measureUnit", "m/s").toString()
 
 
 
@@ -135,6 +141,7 @@ class HomeFragment : Fragment(){
                             bindingHF.progressBar.visibility = View.GONE
                             bindingHF.scrollView2.visibility = View.VISIBLE
                             display(result.weather, language, measureUnit, unitTemp)
+                            println(language)
 
 
                         }
@@ -147,12 +154,14 @@ class HomeFragment : Fragment(){
                 }
             }
         } else {
-            Toast.makeText(requireContext(), "chech your internet \n this is not Updating data ", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(),
+                "chech your internet \n this is not Updating data ",
+                Toast.LENGTH_LONG).show()
             Log.i("TAG", "onViewCreated: offline mode")
             viewModel.getOfflineWeather()
             lifecycleScope.launch {
-                viewModel.weatherOffline.collectLatest{result ->
-                    when(result){
+                viewModel.weatherOffline.collectLatest { result ->
+                    when (result) {
                         is OfflineWeatherState.Loading -> {
                             bindingHF.progressBar.visibility = View.VISIBLE
                             bindingHF.scrollView2.visibility = View.GONE
@@ -162,29 +171,29 @@ class HomeFragment : Fragment(){
                         is OfflineWeatherState.Success -> {
                             bindingHF.progressBar.visibility = View.GONE
                             bindingHF.scrollView2.visibility = View.VISIBLE
-                            if (result.weather != null && result.weather.size > 0){
-                                 val weather =result.weather?.last()
-                                    ?.let {  WeatherDetail(
-                                        it.lat,
-                                        it.lon,
-                                        it.timezone,
-                                        it.timezone_offset,
-                                        it.alerts,
-                                        it.current,
-                                        it.daily,
-                                        it.hourly,
-                                    )
-                                      }
+                            if (result.weather != null && result.weather.size > 0) {
+                                val weather = result.weather?.last()
+                                    ?.let {
+                                        WeatherDetail(
+                                            it.lat,
+                                            it.lon,
+                                            it.timezone,
+                                            it.timezone_offset,
+                                            it.alerts,
+                                            it.current,
+                                            it.daily,
+                                            it.hourly,
+                                        )
+                                    }
                                 if (weather != null) {
                                     display(weather, language, measureUnit, unitTemp)
                                 }
-                            }else
+                            } else
                                 Log.i("TAG", "onViewCreated: empty data")
 
 
                         }
                         else -> {
-
 
 
                         }
@@ -226,6 +235,7 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun display(result: WeatherDetail, lang: String, measureUnit: String, unit: String) {
+        println(lang)
         val numFormatter = NumberFormat.getInstance(Locale(lang))
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val addresses: List<Address> =
@@ -244,19 +254,28 @@ class HomeFragment : Fragment(){
             Log.i("TAG", "getFullAddress: ${addresses[0].adminArea}")
             bindingHF.LocationName.text = "${addresses[0].adminArea}/${addresses[0].countryName}"
         }
-        bindingHF.dateTxt.text = date(lang)
+        if (lang == "ar")
+            bindingHF.dateTxt.text = date("ar")
+        else bindingHF.dateTxt.text = date("en")
 
-        bindingHF.valueWind.text = result.current.wind_speed.toString()
+        if (lang == "ar") bindingHF.valueWind.text = mapNumber(result.current.wind_speed.toString())
+        else bindingHF.valueWind.text = result.current.wind_speed.toString()
 
-        bindingHF.valuePressure.text = "${result.current.pressure} hpa"
+        if (lang == "ar") bindingHF.valuePressure.text ="${ mapNumber("${result.current.pressure}")} باسكال"
+        else bindingHF.valuePressure.text = "${result.current.pressure} hpa"
 
-        bindingHF.valueHumidity.text = "${result.current.humidity} %"
+        if (lang == "ar") bindingHF.valueHumidity.text = mapNumber("${result.current.humidity} %")
+        else bindingHF.valueHumidity.text = "${result.current.humidity} %"
 
-        bindingHF.valueCloud.text = "${result.current.clouds} %"
 
-        bindingHF.valueUltraViolet.text = result.current.uvi.toString()
+        if (lang == "ar") bindingHF.valueCloud.text = mapNumber("${result.current.clouds} %")
+        else bindingHF.valueCloud.text = "${result.current.clouds} %"
 
-        bindingHF.valueVisibility.text = "${result.current.visibility} m"
+        if (lang == "ar") bindingHF.valueUltraViolet.text = mapNumber(result.current.uvi.toString())
+        else bindingHF.valueUltraViolet.text = result.current.uvi.toString()
+
+        if (lang == "ar") bindingHF.valueVisibility.text = mapNumber("${result.current.visibility} م")
+        else bindingHF.valueVisibility.text ="${result.current.visibility}m"
 
         val formattedNumber = numFormatter.format(result.current.temp)
 
@@ -265,30 +284,33 @@ class HomeFragment : Fragment(){
 
                 bindingHF.tempTxt.text = "${formattedNumber}°C"
                 if (measureUnit.equals("m/s")) {
-                    bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
+                   if(lang == "ar") bindingHF.valueWind.text = mapNumber("${result.current.wind_speed} م/ث")
+                    else bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
                 } else {
-                    bindingHF.valueWind.text =
-                        "${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
+                    if(lang == "ar") bindingHF.valueWind.text = mapNumber("${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} ميلى/س")
+                    else bindingHF.valueWind.text ="${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
                 }
             }
             "imperial" -> {
 
                 bindingHF.tempTxt.text = "${formattedNumber}°f"
                 if (measureUnit.equals("m/s")) {
-                    bindingHF.valueWind.text =
-                        "${convertMetersPerSecondToMilesPerHour(result.current.wind_speed).toInt()} m/s"
+                    if(lang == "ar") bindingHF.valueWind.text = mapNumber("${convertMetersPerSecondToMilesPerHour(result.current.wind_speed).toInt()} م/ث")
+                    else bindingHF.valueWind.text ="${convertMetersPerSecondToMilesPerHour(result.current.wind_speed).toInt()} m/s"
                 } else {
-                    bindingHF.valueWind.text = "${result.current.wind_speed} m/h"
+                   if(lang == "ar") bindingHF.valueWind.text =  mapNumber("${result.current.wind_speed} ميلى/س")
+                    else bindingHF.valueWind.text = "${result.current.wind_speed} m/h"
                 }
             }
             else -> {
 
                 bindingHF.tempTxt.text = "${formattedNumber}°k"
                 if (measureUnit.equals("m/s")) {
-                    bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
+                    if (lang == "ar") bindingHF.valueWind.text = mapNumber("${result.current.wind_speed} م/ث ")
+                    else bindingHF.valueWind.text = "${result.current.wind_speed} m/s"
                 } else {
-                    bindingHF.valueWind.text =
-                        "${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
+                    if(lang == "ar") bindingHF.valueWind.text = mapNumber("${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} ميلى/س")
+                    else bindingHF.valueWind.text ="${convertMilesPerHourToMetersPerSecond(result.current.wind_speed).toInt()} m/h"
                 }
             }
         }
@@ -308,14 +330,57 @@ class HomeFragment : Fragment(){
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun date(lang: String): String? {
+        println(lang)
         val currentDateTime = LocalDateTime.now()
-        val locale = Locale(lang)
-        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy").withLocale(locale)
-            .withDecimalStyle(DecimalStyle.of(locale))
-        val formattedDateTime = currentDateTime.format(formatter)
-        return formattedDateTime
+        if (lang == "ar") {
+            val locale = Locale("ar")
+            val arabicDecimalStyle = DecimalStyle.of(locale)
+                .withZeroDigit('\u0660')
+                .withDecimalSeparator('\u066B')
+            println(arabicDecimalStyle.zeroDigit)
+            println(arabicDecimalStyle.decimalSeparator)
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", locale)
+                .withDecimalStyle(arabicDecimalStyle)
+            val formattedDateTime = currentDateTime.format(formatter)
+            return formattedDateTime
+        } else {
+            val locale = Locale(lang)
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", locale)
+            val formattedDateTime = currentDateTime.format(formatter)
+            return formattedDateTime
+        }
+//        println(lang)
+//        val currentDateTime = LocalDateTime.now()
+//        val locale = if (lang == "ar") Locale("ar") else Locale(lang)
+//        val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", locale)
+//        val formattedDateTime = currentDateTime.format(formatter)
+//        return formattedDateTime
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun mapNumber(number: String): String {
+        val numberMapping = mapOf(
+            "0" to "٠",
+            "1" to "١",
+            "2" to "٢",
+            "3" to "٣",
+            "4" to "٤",
+            "5" to "٥",
+            "6" to "٦",
+            "7" to "٧",
+            "8" to "٨",
+            "9" to "٩",
+            "." to "."
+        )
+        val parts = number.split(".")
+        val integerPart =
+            parts.getOrNull(0)?.map { numberMapping.getOrDefault(it.toString(), it.toString()) }
+        val decimalPart =
+            parts.getOrNull(1)?.map { numberMapping.getOrDefault(it.toString(), it.toString()) }
 
-
+        return buildString {
+            append(integerPart?.joinToString("") ?: "")
+            append(decimalPart?.joinToString("")?.let { ".$it" } ?: "")
+        }
+    }
 }

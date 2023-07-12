@@ -28,6 +28,7 @@ import androidx.work.Configuration
 import androidx.work.WorkManager
 import com.example.skysiren.AlertFragment.AlertViewModel.AlertViewModel
 import com.example.skysiren.AlertFragment.AlertViewModel.AlertViewModelFactory
+import com.example.skysiren.CoroutineWorker.WorkerRequest
 import com.example.skysiren.CoroutineWorker.WorkerRequest.createRequst
 import com.example.skysiren.DataBase.ConcreteLocalSource
 import com.example.skysiren.DataBase.RoomState
@@ -178,8 +179,8 @@ class AlertFragment : Fragment(), OnClick {
 
         alertBinding.startDateValue.setOnClickListener {
             setDateAndTime { (timeInMillis, dateInMillis) ->
-                startTime = getTimeToAlert(timeInMillis, "en")
-                startDate = getDateToAlert(dateInMillis, "en")
+                startTime = getTime(timeInMillis, "en")
+                startDate = getDate(dateInMillis, "en")
                 alertBinding.startDateValue.setText("$startDate \n $startTime")
                 alertObj.startDate = dateInMillis
                 alertObj.startimeOfAlert = timeInMillis
@@ -190,8 +191,8 @@ class AlertFragment : Fragment(), OnClick {
         }
         alertBinding.endDateValue.setOnClickListener {
             setDateAndTime { (timeInMillis, dateInMillis) ->
-                endTime = getTimeToAlert(timeInMillis, "en")
-                endDate = getDateToAlert(dateInMillis, "en")
+                endTime = getTime(timeInMillis, "en")
+                endDate = getDate(dateInMillis, "en")
                 alertBinding.endDateValue.setText("$endDate \n $endTime")
                 alertObj.endDate = dateInMillis
                 alertObj.endTimeOfAlert = timeInMillis
@@ -330,11 +331,11 @@ class AlertFragment : Fragment(), OnClick {
         }.timeInMillis
     }
 
-    fun getDateToAlert(time: Long, language: String): String {
+    fun getDate(time: Long, language: String): String {
         return SimpleDateFormat("M/d/yyyy", Locale(language)).format(time)
     }
 
-    fun getTimeToAlert(time: Long, language: String): String {
+    fun getTime(time: Long, language: String): String {
         return SimpleDateFormat("h:mm a", Locale(language)).format(time)
     }
 
@@ -406,6 +407,7 @@ class AlertFragment : Fragment(), OnClick {
         builder.setMessage(getString(R.string.are_you_sure_alert))
         builder.setPositiveButton(getString(R.string.confirm_yes)) { _, _ ->
             viewModel.deletAlertFromRoom(alerts)
+            WorkerRequest.remove(alertObj?.startDate.toString(), requireContext())
         }
         builder.setNegativeButton(android.R.string.cancel) { _, _ -> }
 

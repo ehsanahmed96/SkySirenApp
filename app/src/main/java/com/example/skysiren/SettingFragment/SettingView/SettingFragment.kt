@@ -84,11 +84,6 @@ class SettingFragment : Fragment() {
             false -> bindingSF.notificationRadioGroup.check(R.id.disable)
         }
 
-
-
-
-
-
         bindingSF.languageRadioGroup.setOnCheckedChangeListener { radioGroup, i ->
             when (i) {
                 R.id.arabic ->{

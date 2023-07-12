@@ -76,12 +76,13 @@ class HourlyAdapter(
         }
     }
 
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun getZoneTime(dt:Int, timeZone: String): String {
         val instant = Instant.ofEpochSecond(dt.toLong())
         val zoneId = ZoneId.of(timeZone)
         val zonedDateTime = instant.atZone(zoneId)
-        val formatter = DateTimeFormatter.ofPattern("K:mm a")
+        val formatter = DateTimeFormatter.ofPattern("K:mm a",Locale(lang))
         return formatter.format(zonedDateTime)
     }
 

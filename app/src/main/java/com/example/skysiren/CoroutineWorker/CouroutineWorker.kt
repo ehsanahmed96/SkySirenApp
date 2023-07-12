@@ -56,6 +56,7 @@ class CouroutineWorker(private val context: Context, parameters: WorkerParameter
     lateinit var pref: SharedPreferences
     lateinit var editor: Editor
     lateinit var repo: RepositoryInterface
+    lateinit var alert :Alerts
 
     @RequiresApi(Build.VERSION_CODES.M)
     override suspend fun doWork(): Result {
@@ -65,7 +66,7 @@ class CouroutineWorker(private val context: Context, parameters: WorkerParameter
         editor = pref.edit()
 
 
-        val alert = inputData.getString("alertobj")?.let { convertToUserAlert(it) }
+        alert = inputData.getString("alertobj")?.let { convertToUserAlert(it) }!!
         val desc = inputData.getString("desc")
         val icon = inputData.getString("icon")
         val isAlertOrNotifi = inputData.getString("isAlertOrNotifi")
@@ -151,6 +152,7 @@ class CouroutineWorker(private val context: Context, parameters: WorkerParameter
             Picasso.get().load(R.drawable.cloudy).into(alertDialog.image)
             alertDialog.btnDismiss.setOnClickListener {
                 dismiss()
+                WorkerRequest.remove(alert?.startDate.toString(), context)
             }
             mediaPlayer.isLooping = true
             mediaPlayer.start()
